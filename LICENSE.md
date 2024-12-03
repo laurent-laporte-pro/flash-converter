@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Laurent LAPORTE
+Copyright © 2024-present Laurent LAPORTE <laurent.laporte.pro@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
