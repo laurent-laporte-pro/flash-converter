@@ -1,0 +1,7 @@
+celery
+ffmpeg-python
+fastapi
+pydantic-settings
+python-multipart
+redis
+uvicorn

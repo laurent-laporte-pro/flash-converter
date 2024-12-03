@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - flash-converter-network
+    command:
+      [ "redis-server", "--appendonly", "yes" ]
+    restart: always
+
+  celery:
+    image: flash-converter-tasks:0.1.0
+    depends_on:
+      - redis
+    build:
+      dockerfile: tasks.Dockerfile
+    networks:
+      - flash-converter-network
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
+    restart: always
+
+  ws:
+    image: flash-converter-ws:0.1.0
+    depends_on:
+      - celery
+    build:
+      dockerfile: ws.Dockerfile
+    expose:
+      - '8000'
+    ports:
+      - '8000:8000'
+    networks:
+      - flash-converter-network
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
+    restart: always
+
+volumes:
+  redis_data:
+  uploads:
+
+networks:
+  flash-converter-network:
+    driver: bridge

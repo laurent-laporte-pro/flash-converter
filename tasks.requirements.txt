@@ -1,0 +1,4 @@
+celery
+ffmpeg-python
+pydantic-settings
+redis

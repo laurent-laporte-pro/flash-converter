@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flash-converter-tasks"
+dynamic = ["version"]
+description = 'Task manager for Video flash converter'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["video", "audio", "converter", "tasks", "celery"]
+authors = [
+    { name = "Laurent LAPORTE", email = "laurent.laporte.pro@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "ffmpeg-python",
+    "celery",
+    "redis",
+    "pydantic-settings",
+]
+
+[project.urls]
+Documentation = "https://github.com/laurent-laporte-pro/flash-converter-tasks#readme"
+Issues = "https://github.com/laurent-laporte-pro/flash-converter-tasks/issues"
+Source = "https://github.com/laurent-laporte-pro/flash-converter-tasks"
+
+[tool.hatch.version]
+path = "src/flash_converter/tasks/__about__.py"
+attr = "__version__"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flash_converter"]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.12"]
+
+# ----------------------------
+# Type checking and linting
+# ----------------------------
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+    "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --namespace-packages --package flash_converter.tasks --install-types --non-interactive {args:src/flash_converter/tasks tests}"
+
+# ----------------------------
+# Configuration of ruff
+# ----------------------------
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+
+# --------------------------------
+# Configuration of tests coverage
+# --------------------------------
+
+[tool.coverage.run]
+source_pkgs = ["flash_converter.tasks", "tests"]
+branch = true
+parallel = true
+omit = [
+    "src/flash_converter/tasks/__about__.py",
+]
+
+[tool.coverage.paths]
+flash_converter_tasks = ["src/flash_converter/tasks", "*/flash-converter-tasks/src/flash_converter/tasks"]
+tests = ["tests", "*/flash-converter-tasks/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
