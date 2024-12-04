@@ -25,12 +25,12 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "ffmpeg-python",
-    "celery",
-    "redis",
-    "pydantic-settings",
+    "celery~=5.4.0",
+    "ffmpeg-python~=0.2.0",
+    "pika~=1.3.2",
+    "pydantic-settings~=2.6.1",
+    "redis~=5.2.0",
 ]
-
 [project.urls]
 Documentation = "https://github.com/laurent-laporte-pro/flash-converter-tasks#readme"
 Issues = "https://github.com/laurent-laporte-pro/flash-converter-tasks/issues"

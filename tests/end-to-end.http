@@ -1,0 +1,37 @@
+### Check the webservice health
+GET {{host}}:{{port}}/
+Accept: application/json
+
+### Check the celery health
+GET {{host}}:{{port}}/health/celery
+Accept: application/json
+
+### Post a video to convert
+POST {{host}}:{{port}}/tasks/
+Accept: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="video"; filename="IMG_3903.mov"
+Content-Type: video/quicktime
+
+< ./IMG_3903.mov
+--WebAppBoundary--
+
+# {
+#  "task_id": "8e7e9a8b-6153-46b6-b3cb-aa097e8c8e0f",
+#  "task_name": "IMG_3903.mov",
+#  "state": "SUCCESS"
+#}
+
+> {% client.global.set("task_id", response.body.task_id); %}
+
+### Get the status of the video processing
+GET {{host}}:{{port}}/tasks/{{task_id}}/status
+Accept: application/json
+
+### Get the result of the video processing
+GET {{host}}:{{port}}/tasks/{{task_id}}/result
+Accept: application/json
+
+>> {{$historyFolder}}/IMG_3903.mp3
