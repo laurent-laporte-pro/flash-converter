@@ -16,7 +16,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=cretin
 
   redis:
-    image: redis
+    image: redis:7.4-alpine3.20
     expose:
       - "6379"
     ports:
@@ -33,6 +33,7 @@ services:
     image: flash-converter-tasks:0.1.0
     depends_on:
       - redis
+      - rabbit
     build:
       dockerfile: tasks.Dockerfile
     networks:
@@ -40,7 +41,7 @@ services:
     volumes:
       - uploads:/app/uploads
     environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - UPLOAD_DIR=/app/uploads
     restart: always
@@ -49,6 +50,7 @@ services:
     image: flash-converter-ws:0.1.0
     depends_on:
       - celery
+      - rabbit
     build:
       dockerfile: ws.Dockerfile
     expose:
@@ -60,7 +62,7 @@ services:
     volumes:
       - uploads:/app/uploads
     environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - UPLOAD_DIR=/app/uploads
     restart: always
