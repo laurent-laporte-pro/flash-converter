@@ -9,7 +9,7 @@ ARG APP_GROUP=superheroes
 ARG APP_HOME=/app
 ARG APP_UPLOADS=/app/uploads
 
-COPY requirements.txt requirements.txt
+COPY tasks.requirements.txt requirements.txt
 COPY flash-converter-tasks/src ${APP_HOME}
 
 RUN echo "DEBUG: Python version: $(python3 --version)" && \
