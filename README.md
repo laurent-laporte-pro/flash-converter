@@ -2,15 +2,16 @@
 
 ## Description of the project
 
-This is a demonstration project for converting Video to MP3 using Python FastAPI and FFmpeg.
+This is a demonstration project for converting Video to MP3 using Python FastAPI, FFmpeg, and Celery with
+a RabbitMQ message broker.
 
-This project is composed of the following parts:
+This project is composed of the following subprojects:
 
 - **flash-converter-ws**: FastAPI web service that converts video to MP3.
 - **flash-converter-tasks**: Celery worker that processes the video conversion tasks.
-- **flash-converter-demo**: a demo of some advanced features of Video/Audio procession using AI models.
+- **flash-converter-demo**: a demo of some advanced features of Video/Audio processing using AI models.
 
-A part is a standalone project that can be run independently.
+Each subproject is a standalone project that can be run independently.
 
 ## Development
 
@@ -21,6 +22,7 @@ A part is a standalone project that can be run independently.
 - Docker Compose
 - FFmpeg
 - Redis
+- RabbitMQ
 
 ### Running the project
 
@@ -29,3 +31,8 @@ Open the `[docker-compose.yaml](docker-compose.yaml)` file and set the environme
 ```bash
 docker-compose up
 ```
+
+### End-to-end testing
+
+The HTTP Request file [end-to-end.http](tests/end-to-end.http) is available in the `tests` directory.
+It demonstrates the conversion of a video file to an MP3 file.
