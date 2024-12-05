@@ -1,0 +1,11 @@
+swimlane,name,description
+video,StartVideo,Start video conversion (entry point).
+video,PreflightCheck,Check if video is valid -- raise `InvalidVideoError` if not.
+video,DetectVoice,Detect voice in video: find start and end timecodes of each voice segment.
+video,ConvertToAudio,Convert video to audio segments (one per voice): prepare subtitles extraction.
+video,ProcessSubtitles,Extract subtitles from audio segments: this process is done in parallel in the `subtitle` swimlane.
+subtitle,StartSubtitles,Start subtitles extraction (entry point).
+subtitle,ConvertToSubtitles,Convert audio to subtitles using AI.
+subtitle,EndSubtitles,End subtitles extraction (exit point).
+video,EmbedSubtitles,Embed subtitles in video.
+video,EndVideo,End video conversion (exit point).
