@@ -25,7 +25,11 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
+    "celery>=5.4.0",
+    "pika~=1.3.2",
+    "pydantic-settings~=2.6.1",
     "pydub~=0.25.1",
+    "redis~=5.2.0",
     "torch~=2.2.2",
     "whisper~=1.1.10",
 ]
