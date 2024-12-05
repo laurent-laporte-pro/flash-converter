@@ -35,9 +35,9 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/Laurent LAPORTE/flash-converter-demo#readme"
-Issues = "https://github.com/Laurent LAPORTE/flash-converter-demo/issues"
-Source = "https://github.com/Laurent LAPORTE/flash-converter-demo"
+Documentation = "https://github.com/laurent-laporte-pro/flash-converter#readme"
+Issues = "https://github.com/laurent-laporte-pro/flash-converter/issues"
+Source = "https://github.com/laurent-laporte-pro/flash-converter"
 
 [tool.hatch.version]
 path = "src/flash_converter_demo/__about__.py"

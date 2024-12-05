@@ -32,9 +32,9 @@ dependencies = [
     "redis~=5.2.0",
 ]
 [project.urls]
-Documentation = "https://github.com/laurent-laporte-pro/flash-converter-tasks#readme"
-Issues = "https://github.com/laurent-laporte-pro/flash-converter-tasks/issues"
-Source = "https://github.com/laurent-laporte-pro/flash-converter-tasks"
+Documentation = "https://github.com/laurent-laporte-pro/flash-converter#readme"
+Issues = "https://github.com/laurent-laporte-pro/flash-converter/issues"
+Source = "https://github.com/laurent-laporte-pro/flash-converter"
 
 [tool.hatch.version]
 path = "src/flash_converter/tasks/__about__.py"

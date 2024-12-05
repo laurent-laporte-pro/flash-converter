@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
     # Project dependencies
@@ -39,9 +40,9 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/laurent-laporte-pro/flash-converter-ws#readme"
-Issues = "https://github.com/laurent-laporte-pro/flash-converter-ws/issues"
-Source = "https://github.com/laurent-laporte-pro/flash-converter-ws"
+Documentation = "https://github.com/laurent-laporte-pro/flash-converter#readme"
+Issues = "https://github.com/laurent-laporte-pro/flash-converter/issues"
+Source = "https://github.com/laurent-laporte-pro/flash-converter"
 
 [tool.hatch.version]
 path = "src/flash_converter/ws/__about__.py"
