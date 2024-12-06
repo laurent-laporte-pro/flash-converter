@@ -1,3 +1,5 @@
+<img alt="Flash Converter Logo" src="docs/img/flash-converter-icon.png" style="float: right; width: 20em; height: 20em;"/>
+
 # Flash Converter
 
 ## Description of the project

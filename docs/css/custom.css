@@ -1,0 +1,10 @@
+/* Custom CSS for the documentation */
+h1 {
+    color: orange;;
+}
+
+/* Centre le contenu */
+.md-content {
+    margin: auto;
+    max-width: 800px;
+}
