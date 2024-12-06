@@ -10,6 +10,7 @@ from celery import chain
 
 from flash_converter_wf.config import settings
 from flash_converter_wf.video.convert_to_audio import convert_to_audio_task
+from flash_converter_wf.video.detect_voice import detect_voice_task
 from flash_converter_wf.video.embed_subtitles import embed_subtitles_task
 from flash_converter_wf.video.preflight_check import preflight_check_task
 from flash_converter_wf.video.process_subtitles import process_subtitles_task
@@ -48,13 +49,13 @@ def launch_workflow(video_path: Path) -> Path:
     # - EmbedSubtitles: Embed subtitles in video.
 
     video_chain = chain(
-        preflight_check_task.s(video_attrs.to_json()),
-        convert_to_audio_task.s(),
+        preflight_check_task.s(),
+        detect_voice_task.s(),
         convert_to_audio_task.s(),
         process_subtitles_task.s(),
         embed_subtitles_task.s(),
     )
-    task = video_chain()
+    task = video_chain(video_attrs.to_json())
 
     # Run the task and wait for the result
     result = task.get(timeout=10)

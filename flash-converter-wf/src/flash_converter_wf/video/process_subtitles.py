@@ -36,10 +36,7 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
     ]
 
     # Process the subtitles in parallel in the `subtitle` swimlane
-    subtitle_tasks = [
-        convert_to_subtitles_task.s(subtitle.to_json())
-        for subtitle in subtitle_attrs
-    ]
+    subtitle_tasks = [convert_to_subtitles_task.s(subtitle.to_json()) for subtitle in subtitle_attrs]
     subtitle_group = group(subtitle_tasks)
     subtitle_group()
 
