@@ -9,6 +9,6 @@ def preflight_check_task(obj: dict[str, str]) -> dict[str, str]:
 
     Check if video is valid -- raise `InvalidVideoError` if not.
     """
-    video_attrs = VideoModel.from_json(obj)
+    video = VideoModel(**obj)  # type: ignore
     # code
-    return video_attrs.to_json()
+    return video.to_json()

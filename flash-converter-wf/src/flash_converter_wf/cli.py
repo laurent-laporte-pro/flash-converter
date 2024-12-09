@@ -46,7 +46,8 @@ def convert_cmd(video_path: str, timeout: int, output: str) -> None:
     try:
         result_path = convert_video(Path(video_path), timeout=timeout)
     except celery.exceptions.TimeoutError as exc:
-        raise SystemExit(f"Task timed out: {exc}") from None
+        msg = f"Task timed out: {exc}"
+        raise SystemExit(msg) from None
     else:
         if output:
             result_path.rename(output)
@@ -98,7 +99,8 @@ def result_cmd(task_id: str, timeout: int, output: str) -> None:
     try:
         result_path = get_task_result(task_id, timeout=timeout)
     except celery.exceptions.TimeoutError as exc:
-        raise SystemExit(f"Task timed out: {exc}") from None
+        msg = f"Task timed out: {exc}"
+        raise SystemExit(msg) from None
     else:
         if output:
             result_path.rename(output)
@@ -120,6 +122,7 @@ def revoke_cmd(task_id: str, timeout: int) -> None:
     try:
         revoke_task(task_id, timeout=timeout)
     except celery.exceptions.TimeoutError as exc:
-        raise SystemExit(f"Revoke timed out: {exc}") from None
+        msg = f"Revoke timed out: {exc}"
+        raise SystemExit(msg) from None
     else:
         click.echo("Task revoked successfully.")

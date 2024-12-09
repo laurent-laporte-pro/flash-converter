@@ -9,6 +9,6 @@ def convert_to_audio_task(obj: dict[str, str]) -> dict[str, str]:
 
     Convert video to audio segments (one per voice): prepare subtitles extraction.
     """
-    video_attrs = VideoModel.from_json(obj)
+    video = VideoModel(**obj)  # type: ignore
     # code
-    return video_attrs.to_json()
+    return video.to_json()

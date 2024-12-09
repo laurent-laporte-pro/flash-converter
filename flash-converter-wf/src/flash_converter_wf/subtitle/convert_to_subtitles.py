@@ -9,14 +9,13 @@ def convert_to_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
 
     Convert audio to subtitles using AI.
     """
-    subtitle_attrs = SubtitleModel.from_json(obj)
-
-    filename = f"subtitles_{subtitle_attrs.segment_start}_{subtitle_attrs.segment_end}.srt"
+    subtitle = SubtitleModel(**obj)  # type: ignore
+    filename = f"subtitles_{subtitle.segment_start}_{subtitle.segment_end}.srt"
 
     # Create subtitles file
-    with (subtitle_attrs.workdir / filename).open(mode="w") as f:
+    with (subtitle.workdir / filename).open(mode="w") as f:
         print("1", file=f)
-        print(f"{subtitle_attrs.segment_start} --> {subtitle_attrs.segment_end}", file=f)
+        print(f"{subtitle.segment_start} --> {subtitle.segment_end}", file=f)
         print("Hello, world!", file=f)
 
-    return subtitle_attrs.to_json()
+    return subtitle.to_json()

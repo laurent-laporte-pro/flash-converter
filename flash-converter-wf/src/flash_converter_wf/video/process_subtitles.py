@@ -13,21 +13,21 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
 
     Extract subtitles from audio segments: this process is done in parallel in the `subtitle` swimlane.
     """
-    video_attrs = VideoModel.from_json(obj)
+    video = VideoModel(**obj)  # type: ignore
 
     segments = [
         "00:00:10.000,00:00:20.000",
         "00:00:30.000,00:00:35.000",
         "00:01:27.000,00:01:30.000",
     ]
-    with (video_attrs.workdir / "subtitles.txt").open(mode="w") as f:
+    with (video.workdir / "subtitles.txt").open(mode="w") as f:
         for segment in segments:
             print(segment, file=f)
 
     # prepare the subtitle attributes
     subtitle_attrs = [
         SubtitleModel(
-            workdir=video_attrs.workdir,
+            workdir=video.workdir,
             segment_start=segment.split(",")[0],
             segment_end=segment.split(",")[1],
         )
@@ -39,4 +39,4 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
     subtitle_group = group(subtitle_tasks)
     subtitle_group()
 
-    return video_attrs.to_json()
+    return video.to_json()

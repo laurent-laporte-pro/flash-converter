@@ -1,9 +1,10 @@
-import dataclasses
+import json
 from pathlib import Path
 
+from pydantic import BaseModel
 
-@dataclasses.dataclass
-class VideoModel:
+
+class VideoModel(BaseModel):
     """
     Task attributes for Video swimlane.
 
@@ -22,18 +23,5 @@ class VideoModel:
     def output_path(self):
         return self.workdir / f"output_{self.video_name}"
 
-    def __post_init__(self):
-        self.workdir = Path(self.workdir)
-
-    @classmethod
-    def from_json(cls, attrs: dict[str, str]) -> "VideoModel":
-        return cls(
-            workdir=Path(attrs["workdir"]),
-            video_name=attrs["video_name"],
-        )
-
     def to_json(self) -> dict[str, str]:
-        return {
-            "workdir": str(self.workdir),
-            "video_name": self.video_name,
-        }
+        return json.loads(self.model_dump_json())
