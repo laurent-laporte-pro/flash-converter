@@ -3,16 +3,14 @@ from pathlib import Path
 
 
 @dataclasses.dataclass
-class VideoAttrs:
+class VideoModel:
     """
     Task attributes for Video swimlane.
 
-    - task_id: Task identifier.
     - workdir: Working directory for the task.
-    - task_name: Task name.
+    - video_name: Name of the video file to process.
     """
 
-    task_id: str
     workdir: Path
     video_name: str
 
@@ -28,16 +26,14 @@ class VideoAttrs:
         self.workdir = Path(self.workdir)
 
     @classmethod
-    def from_json(cls, attrs: dict[str, str]) -> "VideoAttrs":
+    def from_json(cls, attrs: dict[str, str]) -> "VideoModel":
         return cls(
-            task_id=attrs["task_id"],
             workdir=Path(attrs["workdir"]),
             video_name=attrs["video_name"],
         )
 
     def to_json(self) -> dict[str, str]:
         return {
-            "task_id": self.task_id,
             "workdir": str(self.workdir),
             "video_name": self.video_name,
         }

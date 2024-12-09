@@ -2,8 +2,8 @@ from celery import group
 
 from flash_converter_wf.app import celery_app
 from flash_converter_wf.subtitle.convert_to_subtitles import convert_to_subtitles_task
-from flash_converter_wf.subtitle.subtitle_attrs import SubtitleAttrs
-from flash_converter_wf.video.video_attrs import VideoAttrs
+from flash_converter_wf.subtitle.subtitle_model import SubtitleModel
+from flash_converter_wf.video.video_model import VideoModel
 
 
 @celery_app.task()
@@ -13,7 +13,7 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
 
     Extract subtitles from audio segments: this process is done in parallel in the `subtitle` swimlane.
     """
-    video_attrs = VideoAttrs.from_json(obj)
+    video_attrs = VideoModel.from_json(obj)
 
     segments = [
         "00:00:10.000,00:00:20.000",
@@ -26,8 +26,7 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
 
     # prepare the subtitle attributes
     subtitle_attrs = [
-        SubtitleAttrs(
-            task_id=video_attrs.task_id,
+        SubtitleModel(
             workdir=video_attrs.workdir,
             segment_start=segment.split(",")[0],
             segment_end=segment.split(",")[1],

@@ -1,7 +1,25 @@
 """
 Use the following command to start the Celery worker::
 
-    celery -A flash_converter_wf.server.celery_app worker --loglevel=info
+    celery -A flash_converter_wf.server.celery_app worker --loglevel=info -Q default,voice,audio,subtitle
+
+Instead of managing all queues with a single worker, you can use multiple commands to start the workers::
+
+    celery -A flash_converter_wf.server.celery_app worker --loglevel=info -Q default -n default@%h
+    celery -A flash_converter_wf.server.celery_app worker --loglevel=info -Q voice -n voice@%h
+    celery -A flash_converter_wf.server.celery_app worker --loglevel=info -Q audio -n audio@%h
+    celery -A flash_converter_wf.server.celery_app worker --loglevel=info -Q subtitle -n subtitle@%h
+
+This will start four workers, each listening on a different queue.
+
+NOTE:
+
+    The ``-n`` option is used to set the hostname of the worker.
+    This is required when you have multiple workers running on the same machine.
+
+    If the workers are launched in separate pods or images (for example, with Docker or Kubernetes),
+    each worker instance will have its own isolated environment, including its own hostname.
+    In this case, it is not necessary to specify a different hostname for each worker.
 """
 
 from flash_converter_wf.app import celery_app

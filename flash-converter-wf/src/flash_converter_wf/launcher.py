@@ -7,6 +7,7 @@ import tempfile
 from pathlib import Path
 
 from celery import chain
+from celery.result import AsyncResult
 
 from flash_converter_wf.config import settings
 from flash_converter_wf.video.convert_to_audio import convert_to_audio_task
@@ -14,40 +15,43 @@ from flash_converter_wf.video.detect_voice import detect_voice_task
 from flash_converter_wf.video.embed_subtitles import embed_subtitles_task
 from flash_converter_wf.video.preflight_check import preflight_check_task
 from flash_converter_wf.video.process_subtitles import process_subtitles_task
-from flash_converter_wf.video.video_attrs import VideoAttrs
+from flash_converter_wf.video.video_model import VideoModel
 
 
-def launch_workflow(video_path: Path) -> Path:
+def upload_video(video_path: Path) -> VideoModel:
     """
-    Launch a new video processing in the workflow.
+    Upload a video file to the workflow.
 
     Args:
-        video_path: Path to the video file to process (e.g. '/path/to/video.mp4').
+        video_path: User-provided path to the video file to process.
 
     Returns:
-        Path to the video file with embedded subtitles.
+        VideoAttrs object with the working directory and video name.
     """
     # Prepare tha working directory
     workdir = Path(tempfile.mkdtemp(dir=settings.UPLOAD_DIR, prefix="video-"))
-    task_id = workdir.name
-
     # Copy the video file
     shutil.copy(video_path, workdir / video_path.name)
-
     # Prepare the video attributes
-    video_attrs = VideoAttrs(
-        task_id=task_id,
-        workdir=workdir,
-        video_name=video_path.name,
-    )
+    return VideoModel(workdir=workdir, video_name=video_path.name)
 
+
+def submit_task(video: VideoModel) -> str:
+    """
+    Submit a new video processing task to the workflow.
+
+    Args:
+        video: VideoModel object with the working directory and video name.
+
+    Returns:
+        UUID of the task.
+    """
     # Definition of the Celery workflow:
     # - PreflightCheck: Check if video is valid -- raise `InvalidVideoError` if not.
     # - DetectVoice: Detect voice in video: find start and end timecodes of each voice segment.
     # - ConvertToAudio: Convert video to audio segments (one per voice): prepare subtitles extraction.
     # - ProcessSubtitles: Extract subtitles from audio segments: this process is done in parallel in the `subtitle` swimlane.
     # - EmbedSubtitles: Embed subtitles in video.
-
     video_chain = chain(
         preflight_check_task.s(),
         detect_voice_task.s(),
@@ -55,10 +59,70 @@ def launch_workflow(video_path: Path) -> Path:
         process_subtitles_task.s(),
         embed_subtitles_task.s(),
     )
-    task = video_chain(video_attrs.to_json())
+    task: AsyncResult = video_chain(video.to_json())
+    return task.task_id
 
-    # Run the task and wait for the result
-    result = task.get(timeout=10)
 
-    video_attrs = VideoAttrs(**result)
-    return video_attrs.output_path
+def get_task_status(task_id: str) -> str:
+    """
+    Get the status of a video conversion task.
+
+    Args:
+        task_id: UUID of the task to check.
+
+    Returns:
+        Status of the task.
+    """
+    task: AsyncResult = AsyncResult(task_id)
+    return task.state
+
+
+def get_task_result(task_id: str, timeout: int = 10) -> Path:
+    """
+    Get the result of a video conversion task.
+
+    Args:
+        task_id: UUID of the task to check.
+        timeout: Timeout in seconds to wait for the task to complete.
+
+    Returns:
+        Path to the video file with embedded subtitles.
+    """
+    result: AsyncResult = AsyncResult(task_id)
+    video = VideoModel(**result.get(timeout=timeout))
+    return video.output_path
+
+
+def revoke_task(task_id: str, timeout: int = 1) -> None:
+    """
+    Revoke a video conversion task.
+
+    Args:
+        task_id: UUID of the task to revoke.
+        timeout: Timeout in seconds to wait for the task to revoke.
+    """
+    result: AsyncResult = AsyncResult(task_id)
+
+    # Use a short timeout to avoid blocking the application,
+    # and cleanup the working directory
+    video = VideoModel(**result.get(timeout=timeout))
+    shutil.rmtree(video.workdir, ignore_errors=True)
+
+    result.revoke(terminate=True, signal="SIGKILL")
+    result.forget()
+
+
+def convert_video(video_path: Path, timeout: int = 10) -> Path:
+    """
+    Launch a new video processing in the workflow.
+
+    Args:
+        video_path: Path to the video file to process (e.g. '/path/to/video.mp4').
+        timeout: Timeout in seconds to wait for the task to complete.
+
+    Returns:
+        Path to the video file with embedded subtitles.
+    """
+    video: VideoModel = upload_video(video_path)
+    task_id: str = submit_task(video)
+    return get_task_result(task_id, timeout=timeout)
