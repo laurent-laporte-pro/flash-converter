@@ -52,6 +52,7 @@ worker = [
     "torch<2.3 ; sys_platform == 'darwin'",
     "torchaudio~=2.5.1 ; sys_platform != 'darwin'",
     "torchaudio<2.3 ; sys_platform == 'darwin'",
+    "pydub>=0.25.1",
     "typed-ffmpeg~=2.1.0",
 ]
 
@@ -78,6 +79,18 @@ extra-dependencies = [
 ]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/flash_converter_wf tests}"
+
+[[tool.mypy.overrides]]
+module = "ffmpeg"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "torch"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pydub"
+ignore_missing_imports = true
 
 # ----------------------------
 # Configuration of ruff

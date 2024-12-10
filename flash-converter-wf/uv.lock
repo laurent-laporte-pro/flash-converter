@@ -114,18 +114,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ffmpeg-python"
-version = "0.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "future" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/5e/d5f9105d59c1325759d838af4e973695081fbbc97182baf73afc78dec266/ffmpeg-python-0.2.0.tar.gz", hash = "sha256:65225db34627c578ef0e11c8b1eb528bb35e024752f6f10b78c011f6f64c4127", size = 21543 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/0c/56be52741f75bad4dc6555991fabd2e07b432d333da82c11ad701123888a/ffmpeg_python-0.2.0-py3-none-any.whl", hash = "sha256:ac441a0404e053f8b6a1113a77c0f452f1cfc62f6344a769475ffdc0f56c23c5", size = 25024 },
-]
-
-[[package]]
 name = "filelock"
 version = "3.16.1"
 source = { registry = "https://pypi.org/simple" }
@@ -149,25 +137,28 @@ dependencies = [
 
 [package.optional-dependencies]
 worker = [
-    { name = "ffmpeg-python" },
+    { name = "pydub" },
     { name = "torch", version = "2.2.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'darwin'" },
     { name = "torch", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'darwin'" },
     { name = "torchaudio", version = "2.2.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'darwin'" },
     { name = "torchaudio", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'darwin'" },
+    { name = "typed-ffmpeg" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "celery", specifier = "~=5.4.0" },
     { name = "click", specifier = "~=8.1.7" },
-    { name = "ffmpeg-python", marker = "extra == 'worker'", specifier = ">=0.2.0" },
     { name = "pika", specifier = "~=1.3.2" },
     { name = "pydantic", specifier = "~=2.10.3" },
     { name = "pydantic-settings", specifier = "~=2.6.1" },
+    { name = "pydub", marker = "extra == 'worker'", specifier = ">=0.25.1" },
     { name = "redis", specifier = "~=5.2.0" },
     { name = "torch", marker = "sys_platform == 'darwin' and extra == 'worker'", specifier = "<2.3" },
     { name = "torch", marker = "sys_platform != 'darwin' and extra == 'worker'", specifier = "~=2.5.1" },
-    { name = "torchaudio", marker = "extra == 'worker'", specifier = ">=2.2.2" },
+    { name = "torchaudio", marker = "sys_platform == 'darwin' and extra == 'worker'", specifier = "<2.3" },
+    { name = "torchaudio", marker = "sys_platform != 'darwin' and extra == 'worker'", specifier = "~=2.5.1" },
+    { name = "typed-ffmpeg", marker = "extra == 'worker'", specifier = "~=2.1.0" },
 ]
 
 [[package]]
@@ -177,15 +168,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a0/52/f16a068ebadae42526484c31f4398e62962504e5724a8ba5dc3409483df2/fsspec-2024.10.0.tar.gz", hash = "sha256:eda2d8a4116d4f2429db8550f2457da57279247dd930bb12f821b58391359493", size = 286853 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c6/b2/454d6e7f0158951d8a78c2e1eb4f69ae81beb8dca5fee9809c6c99e9d0d0/fsspec-2024.10.0-py3-none-any.whl", hash = "sha256:03b9a6785766a4de40368b88906366755e2819e758b83705c88cd7cb5fe81871", size = 179641 },
-]
-
-[[package]]
-name = "future"
-version = "1.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a7/b2/4140c69c6a66432916b26158687e821ba631a4c9273c474343badf84d3ba/future-1.0.0.tar.gz", hash = "sha256:bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05", size = 1228490 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl", hash = "sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216", size = 491326 },
 ]
 
 [[package]]
@@ -621,6 +603,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pydub"
+version = "0.25.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fe/9a/e6bca0eed82db26562c73b5076539a4a08d3cffd19c3cc5913a3e61145fd/pydub-0.25.1.tar.gz", hash = "sha256:980a33ce9949cab2a569606b65674d748ecbca4f0796887fd6f46173a7b0d30f", size = 38326 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/53/d78dc063216e62fc55f6b2eebb447f6a4b0a59f55c8406376f76bf959b08/pydub-0.25.1-py2.py3-none-any.whl", hash = "sha256:65617e33033874b59d87db603aa1ed450633288aefead953b30bded59cb599a6", size = 32327 },
+]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 source = { registry = "https://pypi.org/simple" }
@@ -805,6 +796,15 @@ dependencies = [
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/78/eb/65f5ba83c2a123f6498a3097746607e5b2f16add29e36765305e4ac7fdd8/triton-3.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c8182f42fd8080a7d39d666814fa36c5e30cc00ea7eeeb1a2983dbb4c99a0fdc", size = 209551444 },
+]
+
+[[package]]
+name = "typed-ffmpeg"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a9/aa/abd85f88bbf6baca61c3f3e1bc569801de9230da9e9f3df64ea95a77075a/typed_ffmpeg-2.1.0.tar.gz", hash = "sha256:1b4a02853ae4c87a22fb20842f5342af02d72a2d29cff8e27bb127ff4aedc54f", size = 128921 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/88/1ad47c4cd77b2bcf68967265e1d642a01a0aaa1991758aa820a9c8882cd0/typed_ffmpeg-2.1.0-py3-none-any.whl", hash = "sha256:bf71ea3798503c35f7b5fc6f2ea16c91b2822ab7512d518bb3be6be5320818a1", size = 139653 },
 ]
 
 [[package]]
