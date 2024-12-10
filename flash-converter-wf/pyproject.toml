@@ -46,6 +46,12 @@ dependencies = [
     "redis~=5.2.0",
 ]
 
+[project.optional-dependencies]
+# The optional dependencies "worker" are used when installing the Celery worker.
+# These dependencies are not required to install "flash-converter-wf" as a library (especially for FastAPI).
+# Use `uv add --optional worker <opt-lib>` to add and install an optional dependency.
+worker = []
+
 [project.urls]
 Documentation = "https://github.com/laurent-laporte-pro/flash-converter#readme"
 Issues = "https://github.com/laurent-laporte-pro/flash-converter/issues"
