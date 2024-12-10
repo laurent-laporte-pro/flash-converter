@@ -47,10 +47,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# The optional dependencies "worker" are used when installing the Celery worker.
-# These dependencies are not required to install "flash-converter-wf" as a library (especially for FastAPI).
-# Use `uv add --optional worker <opt-lib>` to add and install an optional dependency.
-worker = []
+worker = [
+    "torch~=2.5.1 ; sys_platform != 'darwin'",
+    "torch<2.3 ; sys_platform == 'darwin'",
+    "torchaudio~=2.5.1 ; sys_platform != 'darwin'",
+    "torchaudio<2.3 ; sys_platform == 'darwin'",
+    "typed-ffmpeg~=2.1.0",
+]
 
 [project.urls]
 Documentation = "https://github.com/laurent-laporte-pro/flash-converter#readme"
