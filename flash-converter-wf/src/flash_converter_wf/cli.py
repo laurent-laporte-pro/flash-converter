@@ -12,6 +12,7 @@ from flash_converter_wf.launcher import (
     submit_task,
     upload_video,
 )
+from flash_converter_wf.video.exceptions import InvalidVideoError
 
 VERSION = f"{__app_name__} {__version__}"
 
@@ -48,6 +49,8 @@ def convert_cmd(video_path: str, timeout: int, output: str) -> None:
     except celery.exceptions.TimeoutError as exc:
         msg = f"Task timed out: {exc}"
         raise SystemExit(msg) from None
+    except InvalidVideoError as exc:
+        raise SystemExit(str(exc)) from None
     else:
         if output:
             result_path.rename(output)
@@ -101,6 +104,8 @@ def result_cmd(task_id: str, timeout: int, output: str) -> None:
     except celery.exceptions.TimeoutError as exc:
         msg = f"Task timed out: {exc}"
         raise SystemExit(msg) from None
+    except InvalidVideoError as exc:
+        raise SystemExit(str(exc)) from None
     else:
         if output:
             result_path.rename(output)

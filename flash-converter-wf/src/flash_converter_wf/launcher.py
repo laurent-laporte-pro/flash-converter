@@ -102,13 +102,18 @@ def revoke_task(task_id: str, timeout: int = 1) -> None:
         timeout: Timeout in seconds to wait for the task to revoke.
     """
     result: AsyncResult = AsyncResult(task_id)
+    result.revoke(terminate=True, wait=True, timeout=timeout)
+
+    if result.status in {"FAILURE", "REVOKED"}:
+        # In case of failure or revocation, we can't get the result
+        # and cleanup the working directory
+        return
 
     # Use a short timeout to avoid blocking the application,
     # and cleanup the working directory
     video = VideoModel(**result.get(timeout=timeout))
     shutil.rmtree(video.workdir, ignore_errors=True)
 
-    result.revoke(terminate=True, signal="SIGKILL")
     result.forget()
 
 
