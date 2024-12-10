@@ -10,6 +10,7 @@ Convert video files to add subtitles to them quickly and efficiently.
 ## Table of Contents
 
 - [Project Description](#project-description)
+    - [Description of the workflow](#description-of-the-workflow)
 - [Using the Celery Application](#using-the-celery-application)
     - [Start a single Celery worker](#start-a-single-celery-worker)
     - [Start multiple Celery workers](#start-multiple-celery-workers)
@@ -45,6 +46,21 @@ The Python project serves several purposes:
 [rabbitmq]: https://www.rabbitmq.com/
 
 [redis]: https://redis.io/
+
+### Description of the workflow
+
+The "video" processing workflow consists of several steps that are executed in sequence:
+
+1. **PreflightCheck**: Check the video file format: `InvalidVideoError` is raised if the video format is not supported.
+2. **DetectVoice**: find voice segments in the video file.
+3. **ConvertToAudio**: extract the audio track of each segment.
+4. **ProcessSubtitles**: delegate the processing of subtitles to the "subtitle" workflow for parallel processing.
+    - **ConvertToSubtitles**: convert the audio track to text.
+5. **EmbedSubtitles**: embed the subtitles in the video file.
+
+The workflow is represented by the following diagram:
+
+![Flash Converter BPM Model](docs/img/flash-converter-BPM.svg)
 
 ## Using the Celery Application
 
