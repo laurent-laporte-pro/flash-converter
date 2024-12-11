@@ -3,6 +3,7 @@ from pathlib import Path
 
 from flash_converter.tasks.app import celery_app
 
+
 class Payload(t.NamedTuple):
     filename: str  # Display name of the file
     video_path: str  # Internal path to the video file
@@ -25,6 +26,6 @@ def convert_video(filename: str, video_path: Path, output_path: Path) -> Payload
 
     import ffmpeg
 
-    ffmpeg.input(str(video_path)).output(str(output_path), acodec="libmp3lame").run()
+    ffmpeg.input(str(video_path)).output(filename=str(output_path), acodec="libmp3lame").run()
 
     return Payload(filename=filename, video_path=str(video_path), audio_path=str(output_path))

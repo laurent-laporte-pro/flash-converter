@@ -14,6 +14,7 @@ class CommonSettings(BaseSettings):
     """
     Common configuration for the Task manager and the webservice
     """
+
     # read from .env file
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
