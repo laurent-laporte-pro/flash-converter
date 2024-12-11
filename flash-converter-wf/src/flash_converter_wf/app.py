@@ -25,6 +25,7 @@ SUBTITLE_EXTRACTION_QUEUE = "subtitle"
 celery_app.conf.task_default_queue = DEFAULT_QUEUE
 celery_app.conf.task_routes = {
     "flash_converter_wf.video.preflight_check.preflight_check_task": {"queue": DEFAULT_QUEUE},
+    "flash_converter_wf.video.extract_audio_track.extract_audio_track_task": {"queue": VOICE_DETECTION_QUEUE},
     "flash_converter_wf.video.detect_voice.detect_voice_task": {"queue": VOICE_DETECTION_QUEUE},
     "flash_converter_wf.video.convert_to_audio.convert_to_audio_task": {"queue": AUDIO_CONVERSION_QUEUE},
     "flash_converter_wf.video.process_subtitles.process_subtitles_task": {"queue": DEFAULT_QUEUE},

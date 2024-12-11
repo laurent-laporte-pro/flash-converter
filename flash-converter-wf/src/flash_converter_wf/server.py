@@ -27,15 +27,17 @@ from flash_converter_wf.subtitle.convert_to_subtitles import convert_to_subtitle
 from flash_converter_wf.video.convert_to_audio import convert_to_audio_task
 from flash_converter_wf.video.detect_voice import detect_voice_task
 from flash_converter_wf.video.embed_subtitles import embed_subtitles_task
+from flash_converter_wf.video.extract_audio_track import extract_audio_track_task
 from flash_converter_wf.video.preflight_check import preflight_check_task
 from flash_converter_wf.video.process_subtitles import process_subtitles_task
 
 __all__ = [
     "celery_app",
-    "preflight_check_task",
     "convert_to_audio_task",
-    "detect_voice_task",
-    "process_subtitles_task",
-    "embed_subtitles_task",
     "convert_to_subtitles_task",
+    "detect_voice_task",
+    "embed_subtitles_task",
+    "extract_audio_track_task",
+    "preflight_check_task",
+    "process_subtitles_task",
 ]

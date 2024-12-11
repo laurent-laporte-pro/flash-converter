@@ -5,20 +5,6 @@ from flash_converter_wf.app import celery_app
 from flash_converter_wf.video.video_model import VideoModel
 
 
-def _convert_to_audio(video_path: Path, audio_path: Path, *, sampling_rate: int = 16000) -> None:
-    # The Python library `typed-ffmpeg` (or `ffmpeg-python`) is a wrapper around the FFmpeg command line tool.
-    # To use it, you need to have FFmpeg installed on your system.
-    # On macOS, you can install FFmpeg using Homebrew: `brew install ffmpeg`
-    import ffmpeg
-
-    ffmpeg.input(str(video_path)).output(
-        filename=str(audio_path),
-        acodec="pcm_s16le",
-        ac=1,
-        ar=sampling_rate,
-    ).run()
-
-
 def _get_voice_segments(audio_path: Path, *, sampling_rate: int = 16000, threshold: float = 0.6):
     # Load the "Silero VAD" model
     import torch
@@ -44,12 +30,11 @@ def detect_voice_task(obj: dict[str, str]) -> dict[str, str]:
     """
     Step: video -- DetectVoice
 
-    Detect voice in video: find start and end timecodes of each voice segment.
+    Detect voice in audio track: find start and end timecodes of each voice segment.
     """
     video = VideoModel(**obj)  # type: ignore
 
     sampling_rate = 16000
-    _convert_to_audio(video.input_path, video.audio_path, sampling_rate=sampling_rate)
     voice_segments = _get_voice_segments(video.audio_path, sampling_rate=sampling_rate, threshold=0.6)
 
     with video.voice_segments_path.open(mode="w") as f:

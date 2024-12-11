@@ -13,6 +13,7 @@ from flash_converter_wf.config import settings
 from flash_converter_wf.video.convert_to_audio import convert_to_audio_task
 from flash_converter_wf.video.detect_voice import detect_voice_task
 from flash_converter_wf.video.embed_subtitles import embed_subtitles_task
+from flash_converter_wf.video.extract_audio_track import extract_audio_track_task
 from flash_converter_wf.video.preflight_check import preflight_check_task
 from flash_converter_wf.video.process_subtitles import process_subtitles_task
 from flash_converter_wf.video.video_model import VideoModel
@@ -54,6 +55,7 @@ def submit_task(video: VideoModel) -> str:
     # - EmbedSubtitles: Embed subtitles in video.
     video_chain = chain(
         preflight_check_task.s(),
+        extract_audio_track_task.s(),
         detect_voice_task.s(),
         convert_to_audio_task.s(),
         process_subtitles_task.s(),

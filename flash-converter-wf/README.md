@@ -52,11 +52,12 @@ The Python project serves several purposes:
 The "video" processing workflow consists of several steps that are executed in sequence:
 
 1. **PreflightCheck**: Check the video file format: `InvalidVideoError` is raised if the video format is not supported.
-2. **DetectVoice**: find voice segments in the video file.
-3. **ConvertToAudio**: extract the audio track of each segment.
-4. **ProcessSubtitles**: delegate the processing of subtitles to the "subtitle" workflow for parallel processing.
+2. **ExtractAudioTrack**: Extract the audio track from the video file.
+3. **DetectVoice**: find voice segments in the audio track.
+4. **ConvertToAudio**: extract the audio track of each segment.
+5. **ProcessSubtitles**: delegate the processing of subtitles to the "subtitle" workflow for parallel processing.
     - **ConvertToSubtitles**: convert the audio track to text.
-5. **EmbedSubtitles**: embed the subtitles in the video file.
+6. **EmbedSubtitles**: embed the subtitles in the video file.
 
 The workflow is represented by the following diagram:
 
