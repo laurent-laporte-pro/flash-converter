@@ -1,8 +1,10 @@
+import csv
+
 from celery import group
 
 from flash_converter_wf.app import celery_app
 from flash_converter_wf.subtitle.convert_to_subtitles import convert_to_subtitles_task
-from flash_converter_wf.subtitle.subtitle_model import SubtitleModel
+from flash_converter_wf.subtitle.subtitle_model import SegmentModel, SubtitleModel
 from flash_converter_wf.video.video_model import VideoModel
 
 
@@ -15,28 +17,16 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
     """
     video = VideoModel(**obj)  # type: ignore
 
-    segments = [
-        "00:00:10.000,00:00:20.000",
-        "00:00:30.000,00:00:35.000",
-        "00:01:27.000,00:01:30.000",
-    ]
-    with (video.workdir / "subtitles.txt").open(mode="w") as f:
-        for segment in segments:
-            print(segment, file=f)
+    # Read the voice segments from the CSV file
+    with video.voice_segments_path.open(mode="r") as f:
+        segments = [SegmentModel(**row) for row in csv.DictReader(f)]  # type: ignore
 
     # prepare the subtitle attributes
-    subtitle_attrs = [
-        SubtitleModel(
-            workdir=video.workdir,
-            segment_start=segment.split(",")[0],
-            segment_end=segment.split(",")[1],
-        )
-        for segment in segments
-    ]
+    subtitle_attrs = [SubtitleModel(workdir=video.workdir, segment=segment) for segment in segments]
 
     # Process the subtitles in parallel in the `subtitle` swimlane
-    subtitle_tasks = [convert_to_subtitles_task.s(subtitle.to_json()) for subtitle in subtitle_attrs]
+    subtitle_tasks = [convert_to_subtitles_task.s(subtitle.model_dump(mode="json")) for subtitle in subtitle_attrs]
     subtitle_group = group(subtitle_tasks)
     subtitle_group()
 
-    return video.to_json()
+    return video.model_dump(mode="json")

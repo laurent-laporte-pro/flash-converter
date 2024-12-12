@@ -1,4 +1,4 @@
-import json
+import datetime
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -15,6 +15,12 @@ class VideoModel(BaseModel):
     workdir: Path
     video_name: str
 
+    # voice segmentation parameters
+    sampling_rate: int = 16000
+    threshold: float = 0.6
+    before: datetime.timedelta = datetime.timedelta(seconds=0.5)  # seconds
+    after: datetime.timedelta = datetime.timedelta(seconds=0.5)  # seconds
+
     @property
     def input_path(self):
         return self.workdir / self.video_name
@@ -30,6 +36,3 @@ class VideoModel(BaseModel):
     @property
     def voice_segments_path(self):
         return self.workdir / "voice_segments.csv"
-
-    def to_json(self) -> dict[str, str]:
-        return json.loads(self.model_dump_json())

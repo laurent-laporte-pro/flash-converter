@@ -11,4 +11,4 @@ def embed_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
     """
     video = VideoModel(**obj)  # type: ignore
     # code
-    return video.to_json()
+    return video.model_dump(mode="json")

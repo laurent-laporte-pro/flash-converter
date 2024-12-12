@@ -54,6 +54,8 @@ worker = [
     "torchaudio<2.3 ; sys_platform == 'darwin'",
     "pydub>=0.25.1",
     "typed-ffmpeg~=2.1.0",
+    "openai-whisper>=20240930",
+    "numpy<2",
 ]
 
 [project.urls]
@@ -92,6 +94,10 @@ ignore_missing_imports = true
 module = "pydub"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "whisper"
+ignore_missing_imports = true
+
 # ----------------------------
 # Configuration of ruff
 # ----------------------------
@@ -123,4 +129,9 @@ exclude_lines = [
     "no cov",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
 ]

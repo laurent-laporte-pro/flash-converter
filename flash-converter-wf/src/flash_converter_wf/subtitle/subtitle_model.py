@@ -1,7 +1,17 @@
-import json
+import datetime
 from pathlib import Path
 
 from pydantic import BaseModel
+
+
+class SegmentModel(BaseModel):
+    """
+    Task attributes for Segment swimlane.
+    """
+
+    index: int
+    start_time: datetime.timedelta
+    end_time: datetime.timedelta
 
 
 class SubtitleModel(BaseModel):
@@ -10,8 +20,12 @@ class SubtitleModel(BaseModel):
     """
 
     workdir: Path
-    segment_start: str
-    segment_end: str
+    segment: SegmentModel
 
-    def to_json(self) -> dict[str, str]:
-        return json.loads(self.model_dump_json())
+    @property
+    def audio_path(self) -> Path:
+        return self.workdir / f"segment_{self.segment.index:05d}.mp3"
+
+    @property
+    def subtitles_path(self) -> Path:
+        return self.workdir / f"segment_{self.segment.index:05d}.srt"

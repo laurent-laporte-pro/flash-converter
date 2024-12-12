@@ -61,7 +61,7 @@ def submit_task(video: VideoModel) -> str:
         process_subtitles_task.s(),
         embed_subtitles_task.s(),
     )
-    task: AsyncResult = video_chain(video.to_json())
+    task: AsyncResult = video_chain(video.model_dump(mode="json"))
     return task.task_id
 
 

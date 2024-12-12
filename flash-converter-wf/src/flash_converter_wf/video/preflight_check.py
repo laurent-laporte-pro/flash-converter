@@ -42,4 +42,4 @@ def preflight_check_task(obj: dict[str, str]) -> dict[str, str]:
     if not mime_type.startswith("video/"):
         msg = f"Invalid file format: '{mime_type}', expected a video file."
         raise InvalidVideoError(msg)
-    return video.to_json()
+    return video.model_dump(mode="json")

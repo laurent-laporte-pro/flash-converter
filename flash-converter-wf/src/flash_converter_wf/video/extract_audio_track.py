@@ -26,6 +26,5 @@ def extract_audio_track_task(obj: dict[str, str]) -> dict[str, str]:
     Extract audio track from video file.
     """
     video = VideoModel(**obj)  # type: ignore
-    sampling_rate = 16000
-    _extract_audio_track(video.input_path, video.audio_path, sampling_rate=sampling_rate)
-    return video.to_json()
+    _extract_audio_track(video.input_path, video.audio_path, sampling_rate=video.sampling_rate)
+    return video.model_dump(mode="json")
