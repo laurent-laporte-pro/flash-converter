@@ -4,6 +4,8 @@ Launch a new video processing in the workflow.
 
 import shutil
 import tempfile
+import typing as t
+import uuid
 from pathlib import Path
 
 from celery import chain
@@ -17,6 +19,19 @@ from flash_converter_wf.video.extract_audio_track import extract_audio_track_tas
 from flash_converter_wf.video.preflight_check import preflight_check_task
 from flash_converter_wf.video.process_subtitles import process_subtitles_task
 from flash_converter_wf.video.video_model import VideoModel
+
+# Timeout in seconds to wait for the video conversion task to complete
+CONVERSION_TIMEOUT = 60
+
+# Timeout in seconds to wait for the task to revoke
+REVOKE_TIMEOUT = 1
+
+
+def _check_task_id(task_id: str) -> str:
+    return str(uuid.UUID(task_id))
+
+
+TaskId = t.Annotated[str, _check_task_id]
 
 
 def upload_video(video_path: Path) -> VideoModel:
@@ -65,7 +80,7 @@ def submit_task(video: VideoModel) -> str:
     return task.task_id
 
 
-def get_task_status(task_id: str) -> str:
+def get_task_status(task_id: TaskId) -> str:
     """
     Get the status of a video conversion task.
 
@@ -79,7 +94,7 @@ def get_task_status(task_id: str) -> str:
     return task.state
 
 
-def get_task_result(task_id: str, timeout: int = 10) -> Path:
+def get_task_result(task_id: TaskId, timeout: int = CONVERSION_TIMEOUT) -> VideoModel:
     """
     Get the result of a video conversion task.
 
@@ -88,14 +103,13 @@ def get_task_result(task_id: str, timeout: int = 10) -> Path:
         timeout: Timeout in seconds to wait for the task to complete.
 
     Returns:
-        Path to the video file with embedded subtitles.
+        The video model with the result of the task.
     """
     result: AsyncResult = AsyncResult(task_id)
-    video = VideoModel(**result.get(timeout=timeout))
-    return video.output_path
+    return VideoModel(**result.get(timeout=timeout))
 
 
-def revoke_task(task_id: str, timeout: int = 1) -> None:
+def revoke_task(task_id: TaskId, timeout: int = REVOKE_TIMEOUT) -> None:
     """
     Revoke a video conversion task.
 
@@ -119,7 +133,7 @@ def revoke_task(task_id: str, timeout: int = 1) -> None:
     result.forget()
 
 
-def convert_video(video_path: Path, timeout: int = 10) -> Path:
+def convert_video(video_path: Path, timeout: int = CONVERSION_TIMEOUT) -> Path:
     """
     Launch a new video processing in the workflow.
 
@@ -131,5 +145,6 @@ def convert_video(video_path: Path, timeout: int = 10) -> Path:
         Path to the video file with embedded subtitles.
     """
     video: VideoModel = upload_video(video_path)
-    task_id: str = submit_task(video)
-    return get_task_result(task_id, timeout=timeout)
+    task_id: TaskId = submit_task(video)
+    video_model = get_task_result(task_id, timeout=timeout)
+    return Path(video_model.output_path)

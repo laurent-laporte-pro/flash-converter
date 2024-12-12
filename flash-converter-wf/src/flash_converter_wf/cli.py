@@ -5,6 +5,8 @@ import click
 
 from flash_converter_wf.__about__ import __app_name__, __version__
 from flash_converter_wf.launcher import (
+    CONVERSION_TIMEOUT,
+    REVOKE_TIMEOUT,
     convert_video,
     get_task_result,
     get_task_status,
@@ -31,7 +33,9 @@ def click_app() -> None:
 
 @click_app.command(name="convert")
 @click.argument("video_path", type=click.Path(exists=True, dir_okay=False))
-@click.option("-t", "--timeout", type=int, default=10, help="Timeout in seconds to wait for the task to complete.")
+@click.option(
+    "-t", "--timeout", type=int, default=CONVERSION_TIMEOUT, help="Timeout in seconds to wait for the task to complete."
+)
 @click.option("-o", "--output", type=click.Path(dir_okay=False), help="Output path for the converted video.")
 def convert_cmd(video_path: str, timeout: int, output: str) -> None:
     """
@@ -45,7 +49,7 @@ def convert_cmd(video_path: str, timeout: int, output: str) -> None:
     """
     click.echo(f"Converting video '{video_path}'...")
     try:
-        result_path = convert_video(Path(video_path), timeout=timeout)
+        output_path = convert_video(Path(video_path), timeout=timeout)
     except celery.exceptions.TimeoutError as exc:
         msg = f"Task timed out: {exc}"
         raise SystemExit(msg) from None
@@ -53,9 +57,9 @@ def convert_cmd(video_path: str, timeout: int, output: str) -> None:
         raise SystemExit(str(exc)) from None
     else:
         if output:
-            result_path.rename(output)
-            result_path = Path(output)
-        click.echo(f"Result: {result_path}")
+            output_path.rename(output)
+            output_path = Path(output)
+        click.echo(f"Result: {output_path}")
 
 
 @click_app.command(name="submit")
@@ -89,7 +93,9 @@ def status_cmd(task_id: str) -> None:
 
 @click_app.command(name="result")
 @click.argument("task_id")
-@click.option("-t", "--timeout", type=int, default=10, help="Timeout in seconds to wait for the task to complete.")
+@click.option(
+    "-t", "--timeout", type=int, default=CONVERSION_TIMEOUT, help="Timeout in seconds to wait for the task to complete."
+)
 @click.option("-o", "--output", type=click.Path(dir_okay=False), help="Output path for the converted video.")
 def result_cmd(task_id: str, timeout: int, output: str) -> None:
     """
@@ -100,22 +106,25 @@ def result_cmd(task_id: str, timeout: int, output: str) -> None:
     """
     click.echo(f"Getting task result: {task_id}...")
     try:
-        result_path = get_task_result(task_id, timeout=timeout)
+        video_model = get_task_result(task_id, timeout=timeout)
     except celery.exceptions.TimeoutError as exc:
         msg = f"Task timed out: {exc}"
         raise SystemExit(msg) from None
     except InvalidVideoError as exc:
         raise SystemExit(str(exc)) from None
     else:
+        output_path = Path(video_model.output_path)
         if output:
-            result_path.rename(output)
-            result_path = Path(output)
-        click.echo(f"Result: {result_path}")
+            output_path.rename(output)
+            output_path = Path(output)
+        click.echo(f"Result: {output_path}")
 
 
 @click_app.command(name="revoke")
 @click.argument("task_id")
-@click.option("-t", "--timeout", type=int, default=1, help="Timeout in seconds to wait for the task to revoke.")
+@click.option(
+    "-t", "--timeout", type=int, default=REVOKE_TIMEOUT, help="Timeout in seconds to wait for the task to revoke."
+)
 def revoke_cmd(task_id: str, timeout: int) -> None:
     """
     Revoke a video conversion task.
