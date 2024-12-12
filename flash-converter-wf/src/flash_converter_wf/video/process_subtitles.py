@@ -1,6 +1,9 @@
 import csv
+import time
+import typing as t
 
 from celery import group
+from celery.result import GroupResult
 
 from flash_converter_wf.app import celery_app
 from flash_converter_wf.subtitle.convert_to_subtitles import convert_to_subtitles_task
@@ -28,5 +31,10 @@ def process_subtitles_task(obj: dict[str, str]) -> dict[str, str]:
     subtitle_tasks = [convert_to_subtitles_task.s(subtitle.model_dump(mode="json")) for subtitle in subtitle_attrs]
     subtitle_group = group(subtitle_tasks)
     subtitle_group()
+
+    # This loop is not very efficient, but it's a simple way to wait for all tasks to complete
+    result: GroupResult = t.cast(GroupResult, subtitle_group.apply_async())
+    while not result.ready():  # type: ignore
+        time.sleep(0.1)
 
     return video.model_dump(mode="json")

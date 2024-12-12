@@ -36,3 +36,7 @@ class VideoModel(BaseModel):
     @property
     def voice_segments_path(self):
         return self.workdir / "voice_segments.csv"
+
+    @property
+    def subtitles_path(self) -> Path:
+        return self.workdir / "subtitles.srt"
