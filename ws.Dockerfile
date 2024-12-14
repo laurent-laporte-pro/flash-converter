@@ -9,7 +9,7 @@ ARG APP_GROUP=superheroes
 ARG APP_HOME=/app
 ARG APP_UPLOADS=/app/uploads
 
-COPY flash-converter-tasks/src ${APP_HOME}
+COPY flash-converter-wf/src ${APP_HOME}
 COPY flash-converter-ws/src ${APP_HOME}
 COPY ws.requirements.txt requirements.txt
 
