@@ -1,9 +1,9 @@
 import kombu.exceptions
 from fastapi import FastAPI
+from flash_converter_wf.server import celery_app
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from flash_converter.tasks import celery_app
 from flash_converter.ws.router import router as task_router
 
 app = FastAPI()

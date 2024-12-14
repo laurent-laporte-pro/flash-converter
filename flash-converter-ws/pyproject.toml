@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "flash-converter-ws"
 dynamic = ["version"]
-description = 'Web service to convert a video to mp3 quickly.'
+description = 'Web service to embed subtitles in videos automatically.'
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
@@ -60,7 +60,7 @@ extra-dependencies = [
     "mypy>=1.0.0",
 ]
 [tool.hatch.envs.types.scripts]
-check = "mypy --namespace-packages --package flash_converter.tasks --install-types --non-interactive {args:src/flash_converter/ws tests}"
+check = "mypy --namespace-packages --package flash_converter.ws --install-types --non-interactive"
 
 # ----------------------------
 # Configuration of ruff
