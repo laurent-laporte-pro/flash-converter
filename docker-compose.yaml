@@ -10,7 +10,7 @@ services:
       - "15672:15672"
     networks:
       - flash-converter-network
-    restart: always
+    restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=lapin
       - RABBITMQ_DEFAULT_PASS=cretin
@@ -27,15 +27,15 @@ services:
       - flash-converter-network
     command:
       [ "redis-server", "--appendonly", "yes" ]
-    restart: always
+    restart: unless-stopped
 
-  celery:
-    image: flash-converter-tasks:0.1.0
+  wf-default:
+    image: flash-converter-wf:0.1.0
     depends_on:
       - redis
       - rabbit
     build:
-      dockerfile: tasks.Dockerfile
+      dockerfile: wf.Dockerfile
     networks:
       - flash-converter-network
     volumes:
@@ -44,12 +44,74 @@ services:
       - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - UPLOAD_DIR=/app/uploads
-    restart: always
+    restart: unless-stopped
+    command:
+      [ "celery", "--app=flash_converter_wf.server.celery_app", "worker", "--loglevel=info", "-Q", "default" ]
+
+  wf-voice:
+    image: flash-converter-wf:0.1.0
+    depends_on:
+      - redis
+      - rabbit
+    build:
+      dockerfile: wf.Dockerfile
+    networks:
+      - flash-converter-network
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
+    restart: unless-stopped
+    command:
+      [ "celery", "--app=flash_converter_wf.server.celery_app", "worker", "--loglevel=info", "-Q", "voice" ]
+
+  wf-audio:
+    image: flash-converter-wf:0.1.0
+    depends_on:
+      - redis
+      - rabbit
+    build:
+      dockerfile: wf.Dockerfile
+    networks:
+      - flash-converter-network
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
+    restart: unless-stopped
+    command:
+      [ "celery", "--app=flash_converter_wf.server.celery_app", "worker", "--loglevel=info", "-Q", "audio" ]
+
+  wf-subtitle:
+    image: flash-converter-wf:0.1.0
+    depends_on:
+      - redis
+      - rabbit
+    build:
+      dockerfile: wf.Dockerfile
+    networks:
+      - flash-converter-network
+    volumes:
+      - uploads:/app/uploads
+    environment:
+      - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - UPLOAD_DIR=/app/uploads
+    restart: unless-stopped
+    command:
+      [ "celery", "--app=flash_converter_wf.server.celery_app", "worker", "--loglevel=info", "-Q", "subtitle" ]
 
   ws:
     image: flash-converter-ws:0.1.0
     depends_on:
-      - celery
+      - wf-default
+      - wf-voice
+      - wf-audio
+      - wf-subtitle
       - rabbit
     build:
       dockerfile: ws.Dockerfile
@@ -65,7 +127,7 @@ services:
       - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - UPLOAD_DIR=/app/uploads
-    restart: always
+    restart: unless-stopped
 
 volumes:
   redis_data:
