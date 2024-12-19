@@ -18,13 +18,22 @@ export const VideoTaskList: React.FC<VideoTaskListProps> = ({ tasks }) => (
     {tasks.length === 0 ? (
       <p>No conversion tasks.</p>
     ) : (
-      <ul style={{ listStyleType: 'none' }}>
+      <table>
+        <thead>
+        <tr>
+          <th>Video</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
         {tasks.map((task: VideoTask) => (
-          <li key={task.taskID}>
-            {task.videoName} - {task.taskStatus}
-          </li>
+          <tr key={task.taskID}>
+            <td>{task.videoName}</td>
+            <td>{task.taskStatus}</td>
+          </tr>
         ))}
-      </ul>
+        </tbody>
+      </table>
     )}  </div>
 )
 
