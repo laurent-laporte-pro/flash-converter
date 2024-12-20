@@ -1,4 +1,14 @@
 /**
+ * ID of a task
+ */
+export type TaskID = string;
+
+/**
+ * Status of a task
+ */
+export type TaskStatus = 'PENDING' | 'STARTED' | 'RETRY' | 'FAILURE' | 'SUCCESS' | 'REVOKED' | 'IGNORED';
+
+/**
  * Represents a task for converting a video.
  */
 export interface VideoTask {
@@ -10,10 +20,11 @@ export interface VideoTask {
   /**
    * The unique identifier for the task.
    */
-  taskID: string;
+  taskID: TaskID;
 
   /**
    * The current status of the task (Celery task status).
    */
-  taskStatus: 'PENDING' | 'STARTED' | 'RETRY' | 'FAILURE' | 'SUCCESS' | 'REVOKED' | 'IGNORED';
+  taskStatus: TaskStatus;
 }
+

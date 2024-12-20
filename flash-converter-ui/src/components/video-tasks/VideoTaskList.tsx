@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { VideoTask } from '../types/video-task.ts'
+import { VideoTask } from '../../types/video-tasks/videoTask.ts'
 
 interface VideoTaskListProps {
   /**
