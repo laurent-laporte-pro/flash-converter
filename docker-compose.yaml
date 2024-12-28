@@ -127,6 +127,7 @@ services:
       - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - UPLOAD_DIR=/app/uploads
+      - CORS_ORIGINS=http://localhost:5173,http://ws:5173
     restart: unless-stopped
 
 volumes:

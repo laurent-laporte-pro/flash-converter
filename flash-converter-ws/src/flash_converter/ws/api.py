@@ -1,12 +1,29 @@
 import kombu.exceptions
 from fastapi import FastAPI
 from flash_converter_wf.server import celery_app
+from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from flash_converter.ws.config import settings
 from flash_converter.ws.router import router as task_router
 
 app = FastAPI()
+
+# Configuration du middleware CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allow_origins.split(","),
+    allow_credentials=True,
+    allow_methods=("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"),
+    allow_headers=(
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+    ),
+)
 
 app.include_router(task_router, prefix="/tasks")
 
