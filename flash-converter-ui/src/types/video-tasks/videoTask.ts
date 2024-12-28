@@ -1,7 +1,12 @@
 /**
+ * Name of a video file
+ */
+export type VideoName = string;
+
+/**
  * ID of a task
  */
-export type TaskID = string;
+export type TaskId = string;
 
 /**
  * Status of a task
@@ -15,16 +20,20 @@ export interface VideoTask {
   /**
    * The name of the video file.
    */
-  videoName: string;
+  videoName: VideoName;
 
   /**
    * The unique identifier for the task.
    */
-  taskID: TaskID;
+  taskId: TaskId;
 
   /**
    * The current status of the task (Celery task status).
    */
   taskStatus: TaskStatus;
-}
 
+  /**
+   * Error message if the task failed.
+   */
+  errorMessage?: string;
+}

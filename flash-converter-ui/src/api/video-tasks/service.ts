@@ -1,15 +1,15 @@
-import { TaskID, TaskStatus } from '../../types/video-tasks/videoTask.ts'
+import { TaskId, TaskStatus } from '../../types/video-tasks/videoTask.ts'
 import axios from 'axios'
 import { apiClient } from './config.ts'
 import { HTTPValidationError } from '../../types/common/errors.ts'
 
 class VideoProcessingService {
-  async createTask (videoFile: File): Promise<TaskID> {
+  async createTask (videoFile: File): Promise<TaskId> {
     const formData = new FormData()
     formData.append('video', videoFile)
 
     try {
-      const { data } = await apiClient.post<TaskID>('/tasks/', formData)
+      const { data } = await apiClient.post<TaskId>('/tasks/', formData)
       return data
     } catch (error) {
       if (axios.isAxiosError<HTTPValidationError>(error)) {
@@ -25,7 +25,7 @@ class VideoProcessingService {
       return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error('Failed to get task status')
+        throw new Error(`Failed to get task status: ${error.message}`)
       }
       throw error
     }
@@ -66,7 +66,7 @@ class VideoProcessingService {
       }
     } catch (error) {
       if (axios.isAxiosError<HTTPValidationError>(error)) {
-        throw new Error('Failed to download video')
+        throw new Error(`Failed to download video: ${error.message}`)
       }
       throw error
     }
@@ -79,7 +79,7 @@ class VideoProcessingService {
       })
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error('Failed to revoke task')
+        throw new Error(`Failed to revoke task: ${error.message}`)
       }
       throw error
     }
@@ -91,7 +91,7 @@ class VideoProcessingService {
       return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error('Failed to check health status')
+        throw new Error(`Failed to check health status: ${error.message}`)
       }
       throw error
     }

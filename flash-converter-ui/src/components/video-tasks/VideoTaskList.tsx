@@ -22,14 +22,20 @@ export const VideoTaskList: React.FC<VideoTaskListProps> = ({ tasks }) => (
         <thead>
         <tr>
           <th>Video</th>
-          <th>Actions</th>
+          <th>Status</th>
+          <th>Message</th>
         </tr>
         </thead>
         <tbody>
         {tasks.map((task: VideoTask) => (
-          <tr key={task.taskID}>
+          <tr key={task.taskId}>
             <td>{task.videoName}</td>
             <td>{task.taskStatus}</td>
+            <td>
+              {task.errorMessage ? (
+                <span style={{ color: 'red' }}>{task.errorMessage}</span>
+              ) : "–"}
+            </td>
           </tr>
         ))}
         </tbody>
