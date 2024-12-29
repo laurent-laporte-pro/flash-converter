@@ -13,7 +13,8 @@ class VideoProcessingService {
       return data
     } catch (error) {
       if (axios.isAxiosError<HTTPValidationError>(error)) {
-        throw new Error(error.response?.data.detail?.[0]?.msg || 'Failed to create task')
+        const defaultMsg = `Failed to create task: ${error.message}`
+        throw new Error(error.response?.data.detail?.[0]?.msg || defaultMsg)
       }
       throw error
     }
@@ -25,7 +26,8 @@ class VideoProcessingService {
       return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to get task status: ${error.message}`)
+        const defaultMsg = `Failed to get task status: ${error.message}`
+        throw new Error(defaultMsg)
       }
       throw error
     }
@@ -66,7 +68,8 @@ class VideoProcessingService {
       }
     } catch (error) {
       if (axios.isAxiosError<HTTPValidationError>(error)) {
-        throw new Error(`Failed to download video: ${error.message}`)
+        const defaultMsg = `Failed to download video: ${error.message}`
+        throw new Error(error.response?.data.detail?.[0]?.msg || defaultMsg)
       }
       throw error
     }
@@ -79,7 +82,8 @@ class VideoProcessingService {
       })
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to revoke task: ${error.message}`)
+        const defaultMsg = `Failed to revoke task: ${error.message}`
+        throw new Error(defaultMsg)
       }
       throw error
     }
@@ -91,7 +95,8 @@ class VideoProcessingService {
       return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to check health status: ${error.message}`)
+        const defaultMsg = `Failed to check health status: ${error.message}`
+        throw new Error(defaultMsg)
       }
       throw error
     }

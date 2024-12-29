@@ -34,13 +34,14 @@ export const VideoTaskList: React.FC<VideoTaskListProps> = ({ tasks }) => (
             <td>
               {task.errorMessage ? (
                 <span style={{ color: 'red' }}>{task.errorMessage}</span>
-              ) : "–"}
+              ) : '–'}
             </td>
           </tr>
         ))}
         </tbody>
       </table>
-    )}  </div>
+    )}
+  </div>
 )
 
 export default VideoTaskList
