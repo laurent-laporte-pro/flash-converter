@@ -6,6 +6,7 @@ import { VideoTask } from './types/video-tasks/videoTask.ts'
 import { videoProcessingService } from './api/video-tasks/service.ts'
 import { useEffect } from 'react'
 import UploadForm from './components/video-tasks/UploadForm.tsx'
+import { TaskCommands } from './types/video-tasks/taskCommands.ts'
 
 function App () {
   const { state, actions } = useVideoTasks()
@@ -31,7 +32,7 @@ function App () {
     return () => clearInterval(interval)
   }, [tasks, actions])
 
-  const handleDownload = (task: VideoTask) => {
+  const downloadTaskCommand = (task: VideoTask) => {
     try {
       videoProcessingService.getTaskResult(task.taskId).then()
     } catch (error) {
@@ -43,6 +44,37 @@ function App () {
     }
   }
 
+  const cancelTaskCommand = (task: VideoTask) => {
+    try {
+      videoProcessingService.revokeTask(task.taskId).then(() => actions.updateTaskStatus(task.taskId, 'REVOKED'))
+    } catch (error) {
+      if (error instanceof Error) {
+        actions.updateTaskError(task.taskId, error.message)
+      } else {
+        actions.updateTaskError(task.taskId, `An error occurred: ${error}`)
+      }
+    }
+  }
+
+  const deleteTaskCommand = (task: VideoTask) => {
+    try {
+      videoProcessingService.revokeTask(task.taskId).then(() => actions.updateTaskStatus(task.taskId, 'REVOKED'))
+      actions.deleteTask(task.taskId)
+    } catch (error) {
+      if (error instanceof Error) {
+        actions.updateTaskError(task.taskId, error.message)
+      } else {
+        actions.updateTaskError(task.taskId, `An error occurred: ${error}`)
+      }
+    }
+  }
+
+  const taskCommands: TaskCommands = {
+    download: downloadTaskCommand,
+    cancel: cancelTaskCommand,
+    delete: deleteTaskCommand,
+  }
+
   return (
     <>
       <div><img src={flashConverterLogo} className="logo" alt="Flash Converter Logo" /></div>
@@ -51,7 +83,7 @@ function App () {
         <UploadForm appendTask={actions.appendTask} />
       </div>
       <div className="card">
-        <VideoTaskList tasks={tasks} handleDownload={handleDownload} />
+        <VideoTaskList tasks={tasks} commands={taskCommands} />
       </div>
     </>
   )

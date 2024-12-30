@@ -3,6 +3,7 @@
  */
 
 import { TaskStatus, VideoTask } from '../../types/video-tasks/videoTask.ts'
+import { TaskCommands } from '../../types/video-tasks/taskCommands.ts'
 
 /**
  * VideoTaskList component displays a list of video conversion tasks.
@@ -11,9 +12,9 @@ import { TaskStatus, VideoTask } from '../../types/video-tasks/videoTask.ts'
  * @param handleDownload - The function to handle the download action.
  * @constructor
  */
-export const VideoTaskList = ({ tasks, handleDownload }: {
+export const VideoTaskList = ({ tasks, commands }: {
   tasks: VideoTask[],
-  handleDownload: (task: VideoTask) => void
+  commands: TaskCommands,
 }) => (
   <div>
     <h2>Video Tasks</h2>
@@ -40,7 +41,7 @@ export const VideoTaskList = ({ tasks, handleDownload }: {
               ) : '–'}
             </td>
             <td>
-              <VideoTaskMenu task={task} handleDownload={handleDownload} />
+              <VideoTaskMenu task={task} commands={commands} />
             </td>
           </tr>
         ))}
@@ -57,24 +58,33 @@ export const VideoTaskList = ({ tasks, handleDownload }: {
  * @param handleDownload - The function to handle the download action.
  * @constructor
  */
-const VideoTaskMenu = ({ task, handleDownload }: {
+const VideoTaskMenu = ({ task, commands }: {
   task: VideoTask,
-  handleDownload: (task: VideoTask) => void
+  commands: TaskCommands,
 }) => {
   const status: TaskStatus = task.taskStatus  // 'PENDING' | 'STARTED' | 'RETRY' | 'FAILURE' | 'SUCCESS' | 'REVOKED' | 'IGNORED'
   switch (status) {
     case 'PENDING':
+      return <>
+        <button onClick={() => commands.cancel(task)}>Annuler</button>
+        <button onClick={() => commands.delete(task)}>Supprimer</button>
+      </>
     case 'STARTED':
     case 'RETRY':
     case 'FAILURE':
-      return <button>Annuler</button>
+      return <button onClick={() => commands.cancel(task)}>Annuler</button>
     case 'SUCCESS':
-      return <button onClick={() => handleDownload(task)}>Télécharger</button>
+      return <>
+        <button onClick={() => commands.download(task)}>Télécharger</button>
+        <button onClick={() => commands.delete(task)}>Supprimer</button>
+      </>
     case 'REVOKED':
     case 'IGNORED':
-      return <button>Supprimer</button>
+      return <button onClick={() => commands.delete(task)}>Supprimer</button>
     default:
-      throw new Error(`Unknown task status: ${status}`)
+      throw new Error(`Unknown task status: ${
+        status
+      }`)
   }
 }
 

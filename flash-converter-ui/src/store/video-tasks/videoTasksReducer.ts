@@ -8,6 +8,7 @@ export interface VideoTasksState {
 export type VideoTasksAction =
   | { type: 'LOAD_TASKS'; payload: VideoTask[] }
   | { type: 'APPEND_TASK'; payload: VideoTask }
+  | { type: 'DELETE_TASK'; payload: TaskId }
   | { type: 'UPDATE_TASK_STATUS'; payload: { taskId: TaskId; taskStatus: TaskStatus } }
   | { type: 'UPDATE_TASK_ERROR'; payload: { taskId: TaskId; errorMessage: string } };
 
@@ -21,6 +22,11 @@ export const videoTasksReducer = (state: VideoTasksState, action: VideoTasksActi
       const updatedTasks = [action.payload, ...state.tasks]
       saveTasksToStorage(updatedTasks)
       return { tasks: updatedTasks }
+
+    case 'DELETE_TASK':
+      const updatedWithoutDeleted = state.tasks.filter(task => task.taskId !== action.payload)
+      saveTasksToStorage(updatedWithoutDeleted)
+      return { tasks: updatedWithoutDeleted }
 
     case 'UPDATE_TASK_STATUS':
       const updatedWithStatus = state.tasks.map(task =>
