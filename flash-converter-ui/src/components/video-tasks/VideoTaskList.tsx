@@ -8,9 +8,13 @@ import { TaskStatus, VideoTask } from '../../types/video-tasks/videoTask.ts'
  * VideoTaskList component displays a list of video conversion tasks.
  *
  * @param tasks - The list of video tasks.
+ * @param handleDownload - The function to handle the download action.
  * @constructor
  */
-export const VideoTaskList = ({ tasks }: { tasks: VideoTask[] }) => (
+export const VideoTaskList = ({ tasks, handleDownload }: {
+  tasks: VideoTask[],
+  handleDownload: (task: VideoTask) => void
+}) => (
   <div>
     <h2>Video Tasks</h2>
     {tasks.length === 0 ? (
@@ -36,7 +40,7 @@ export const VideoTaskList = ({ tasks }: { tasks: VideoTask[] }) => (
               ) : '–'}
             </td>
             <td>
-              <VideoTaskMenu task={task} />
+              <VideoTaskMenu task={task} handleDownload={handleDownload} />
             </td>
           </tr>
         ))}
@@ -50,9 +54,13 @@ export const VideoTaskList = ({ tasks }: { tasks: VideoTask[] }) => (
  * VideoTaskMenu component displays a dropdown menu of actions for a video task.
  *
  * @param task - The video task.
+ * @param handleDownload - The function to handle the download action.
  * @constructor
  */
-const VideoTaskMenu = ({ task }: { task: VideoTask }) => {
+const VideoTaskMenu = ({ task, handleDownload }: {
+  task: VideoTask,
+  handleDownload: (task: VideoTask) => void
+}) => {
   const status: TaskStatus = task.taskStatus  // 'PENDING' | 'STARTED' | 'RETRY' | 'FAILURE' | 'SUCCESS' | 'REVOKED' | 'IGNORED'
   switch (status) {
     case 'PENDING':
@@ -61,7 +69,7 @@ const VideoTaskMenu = ({ task }: { task: VideoTask }) => {
     case 'FAILURE':
       return <button>Annuler</button>
     case 'SUCCESS':
-      return <button>Télécharger</button>
+      return <button onClick={() => handleDownload(task)}>Télécharger</button>
     case 'REVOKED':
     case 'IGNORED':
       return <button>Supprimer</button>

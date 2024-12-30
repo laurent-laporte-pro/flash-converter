@@ -31,6 +31,18 @@ function App () {
     return () => clearInterval(interval)
   }, [tasks, actions])
 
+  const handleDownload = (task: VideoTask) => {
+    try {
+      videoProcessingService.getTaskResult(task.taskId).then()
+    } catch (error) {
+      if (error instanceof Error) {
+        actions.updateTaskError(task.taskId, error.message)
+      } else {
+        actions.updateTaskError(task.taskId, `An error occurred: ${error}`)
+      }
+    }
+  }
+
   return (
     <>
       <div><img src={flashConverterLogo} className="logo" alt="Flash Converter Logo" /></div>
@@ -39,7 +51,7 @@ function App () {
         <UploadForm appendTask={actions.appendTask} />
       </div>
       <div className="card">
-        <VideoTaskList tasks={tasks} />
+        <VideoTaskList tasks={tasks} handleDownload={handleDownload} />
       </div>
     </>
   )
