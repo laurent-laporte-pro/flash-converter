@@ -41,7 +41,8 @@ function App () {
     }
   }
 
-  const handleUpload = async () => {
+  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     if (!videoFile) return
     setUploading(true)
     setUploadError('')
@@ -49,6 +50,8 @@ function App () {
       const taskId = await videoProcessingService.createTask(videoFile)
       const videoTask: VideoTask = { taskId, videoName: videoFile.name, taskStatus: 'PENDING' }
       actions.createTask(videoTask)
+      const formElement = event.target as HTMLFormElement
+      formElement.reset()
       setVideoFile(null)
     } catch (error) {
       if (error instanceof Error) {
@@ -66,11 +69,13 @@ function App () {
       <div><img src={flashConverterLogo} className="logo" alt="Flash Converter Logo" /></div>
       <h2>Téléchargez une vidéo</h2>
       <div className="card">
-        {/* fixme: faire en sorte que le nom du fichier s'efface une fois le fichier téléchargé */}
-        <input type={'file'} placeholder={'Téléchargez une vidéo'} accept="video/*" onChange={handleVideoFileChange} />
-        <button onClick={handleUpload} disabled={videoFile === null || uploading}>Télécharger</button>
-        <FileInfo file={videoFile} />
-        <UploadError error={uploadError} />
+        <form className="card" onSubmit={handleUpload}>
+          <input type={'file'} placeholder={'Téléchargez une vidéo'} accept="video/*"
+                 onChange={handleVideoFileChange} />
+          <button type="submit" disabled={uploading}>Télécharger</button>
+          <FileInfo file={videoFile} />
+          <UploadError error={uploadError} />
+        </form>
       </div>
       <div className="card">
         <VideoTaskList tasks={tasks} />
