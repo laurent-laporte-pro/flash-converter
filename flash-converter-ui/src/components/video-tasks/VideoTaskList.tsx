@@ -2,21 +2,19 @@
  * Ce composant est utilisé pour afficher la liste des tâches de conversion vidéo.
  */
 
-import React from 'react'
 import { VideoTask } from '../../types/video-tasks/videoTask.ts'
 
-interface VideoTaskListProps {
-  /**
-   * List of video tasks to display.
-   */
-  tasks: VideoTask[];
-}
-
-export const VideoTaskList: React.FC<VideoTaskListProps> = ({ tasks }) => (
+/**
+ * VideoTaskList component displays a list of video conversion tasks.
+ *
+ * @param tasks - The list of video tasks.
+ * @constructor
+ */
+export const VideoTaskList = ({ tasks }: { tasks: VideoTask[] }) => (
   <div>
     <h2>Video Tasks</h2>
     {tasks.length === 0 ? (
-      <p>No conversion tasks.</p>
+      <p>Aucune tâche de conversion.</p>
     ) : (
       <table>
         <thead>

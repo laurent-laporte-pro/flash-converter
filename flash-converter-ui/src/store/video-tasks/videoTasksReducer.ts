@@ -7,7 +7,7 @@ export interface VideoTasksState {
 
 export type VideoTasksAction =
   | { type: 'LOAD_TASKS'; payload: VideoTask[] }
-  | { type: 'CREATE_TASK'; payload: VideoTask }
+  | { type: 'APPEND_TASK'; payload: VideoTask }
   | { type: 'UPDATE_TASK_STATUS'; payload: { taskId: TaskId; taskStatus: TaskStatus } }
   | { type: 'UPDATE_TASK_ERROR'; payload: { taskId: TaskId; errorMessage: string } };
 
@@ -17,7 +17,7 @@ export const videoTasksReducer = (state: VideoTasksState, action: VideoTasksActi
       saveTasksToStorage(action.payload)
       return { tasks: action.payload }
 
-    case 'CREATE_TASK':
+    case 'APPEND_TASK':
       const updatedTasks = [action.payload, ...state.tasks]
       saveTasksToStorage(updatedTasks)
       return { tasks: updatedTasks }

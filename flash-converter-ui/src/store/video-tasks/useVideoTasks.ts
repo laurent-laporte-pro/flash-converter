@@ -19,8 +19,8 @@ export const useVideoTasks = () => {
     dispatch({ type: 'LOAD_TASKS', payload: tasks })
   }, [])
 
-  const createTask = (task: VideoTask) => {
-    dispatch({ type: 'CREATE_TASK', payload: task })
+  const appendTask = (task: VideoTask) => {
+    dispatch({ type: 'APPEND_TASK', payload: task })
   }
 
   const updateTaskStatus = (taskId: TaskId, taskStatus: TaskStatus) => {
@@ -34,7 +34,7 @@ export const useVideoTasks = () => {
   return {
     state,
     actions: {
-      createTask: useCallback(createTask, []),
+      appendTask: useCallback(appendTask, []),
       updateTaskStatus: useCallback(updateTaskStatus, []),
       updateTaskError: useCallback(updateTaskError, []),
     }
