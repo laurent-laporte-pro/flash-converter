@@ -11,7 +11,7 @@ export type TaskId = string;
 /**
  * Status of a task
  */
-export type TaskStatus = 'PENDING' | 'STARTED' | 'RETRY' | 'FAILURE' | 'SUCCESS' | 'REVOKED' | 'IGNORED';
+export type TaskStatus = "PENDING" | "STARTED" | "RETRY" | "FAILURE" | "SUCCESS" | "REVOKED" | "IGNORED";
 
 /**
  * Represents a task for converting a video.

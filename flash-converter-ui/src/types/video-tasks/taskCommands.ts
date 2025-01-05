@@ -1,4 +1,4 @@
-import { VideoTask } from './videoTask.ts'
+import { VideoTask } from "./videoTask.ts";
 
 export type TaskCommand = (task: VideoTask) => void;
 

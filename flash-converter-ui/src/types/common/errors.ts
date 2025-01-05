@@ -2,7 +2,6 @@
  * Validation error response from the API.
  */
 export interface ValidationError {
-
   /**
    * The location of the error in the input data.
    */
