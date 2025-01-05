@@ -1,4 +1,3 @@
-import flashConverterLogo from "/flash-converter-icon.png";
 import "./App.css";
 import VideoTaskList from "./components/video-tasks/VideoTaskList.tsx";
 import { useVideoTasks } from "./store/video-tasks/useVideoTasks.ts";
@@ -77,9 +76,6 @@ function App() {
 
   return (
     <>
-      <div>
-        <img src={flashConverterLogo} className="logo" alt="Flash Converter Logo" />
-      </div>
       <h2>Téléchargez une vidéo</h2>
       <div className="card">
         <UploadForm appendTask={actions.appendTask} />
