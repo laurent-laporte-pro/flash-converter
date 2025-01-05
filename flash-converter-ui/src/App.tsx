@@ -30,7 +30,7 @@ function App() {
   useEffect(() => {
     const interval = setInterval(async () => state.tasks.forEach(updateTaskStatus), 5000);
     return () => clearInterval(interval);
-  }, [tasks, actions]);
+  });
 
   const downloadTaskCommand = (task: VideoTask) => {
     try {

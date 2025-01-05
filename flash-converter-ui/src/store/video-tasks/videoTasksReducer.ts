@@ -13,22 +13,26 @@ export type VideoTasksAction =
   | { type: "UPDATE_TASK_ERROR"; payload: { taskId: TaskId; errorMessage: string } };
 
 export const videoTasksReducer = (state: VideoTasksState, action: VideoTasksAction): VideoTasksState => {
-  switch (action.type) {
-    case "LOAD_TASKS":
+  const actionType = action.type;
+  switch (actionType) {
+    case "LOAD_TASKS": {
       saveTasksToStorage(action.payload);
       return { tasks: action.payload };
+    }
 
-    case "APPEND_TASK":
+    case "APPEND_TASK": {
       const updatedTasks = [action.payload, ...state.tasks];
       saveTasksToStorage(updatedTasks);
       return { tasks: updatedTasks };
+    }
 
-    case "DELETE_TASK":
+    case "DELETE_TASK": {
       const updatedWithoutDeleted = state.tasks.filter((task) => task.taskId !== action.payload);
       saveTasksToStorage(updatedWithoutDeleted);
       return { tasks: updatedWithoutDeleted };
+    }
 
-    case "UPDATE_TASK_STATUS":
+    case "UPDATE_TASK_STATUS": {
       const updatedWithStatus = state.tasks.map((task) =>
         task.taskId === action.payload.taskId
           ? {
@@ -40,8 +44,9 @@ export const videoTasksReducer = (state: VideoTasksState, action: VideoTasksActi
       );
       saveTasksToStorage(updatedWithStatus);
       return { tasks: updatedWithStatus };
+    }
 
-    case "UPDATE_TASK_ERROR":
+    case "UPDATE_TASK_ERROR": {
       const updatedWithError = state.tasks.map((task) =>
         task.taskId === action.payload.taskId
           ? {
@@ -52,8 +57,9 @@ export const videoTasksReducer = (state: VideoTasksState, action: VideoTasksActi
       );
       saveTasksToStorage(updatedWithError);
       return { tasks: updatedWithError };
+    }
 
     default:
-      throw new Error(`Unhandled action type: ${(action as any).type}`);
+      throw new Error(`Unhandled action type: ${actionType}`);
   }
 };
