@@ -1,83 +1,166 @@
-/**
- * Ce composant est utilisé pour afficher la liste des tâches de conversion vidéo.
- */
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  ButtonGroup,
+  Box,
+} from "@mui/material";
+import { Download as DownloadIcon, Delete as DeleteIcon, Cancel as CancelIcon } from "@mui/icons-material";
 import { TaskStatus, VideoTask } from "../../types/video-tasks/videoTask.ts";
 import { TaskCommands } from "../../types/video-tasks/taskCommands.ts";
 
-/**
- * VideoTaskList component displays a list of video conversion tasks.
- *
- * @param tasks - The list of video tasks.
- * @param handleDownload - The function to handle the download action.
- * @constructor
- */
-export const VideoTaskList = ({ tasks, commands }: { tasks: VideoTask[]; commands: TaskCommands }) => (
-  <div>
-    <h2>Video Tasks</h2>
-    {tasks.length === 0 ? (
-      <p>Aucune tâche de conversion.</p>
-    ) : (
-      <table>
-        <thead>
-          <tr>
-            <th>Video</th>
-            <th>Status</th>
-            <th>Message</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task: VideoTask) => (
-            <tr key={task.taskId}>
-              <td>{task.videoName}</td>
-              <td>{task.taskStatus}</td>
-              <td>{task.errorMessage ? <span style={{ color: "red" }}>{task.errorMessage}</span> : "–"}</td>
-              <td>
-                <VideoTaskMenu task={task} commands={commands} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
-  </div>
-);
-
-/**
- * VideoTaskMenu component displays a dropdown menu of actions for a video task.
- *
- * @param task - The video task.
- * @param handleDownload - The function to handle the download action.
- * @constructor
- */
 const VideoTaskMenu = ({ task, commands }: { task: VideoTask; commands: TaskCommands }) => {
-  const status: TaskStatus = task.taskStatus; // 'PENDING' | 'STARTED' | 'RETRY' | 'FAILURE' | 'SUCCESS' | 'REVOKED' | 'IGNORED'
+  const status: TaskStatus = task.taskStatus;
+
+  const buttonProps = {
+    sx: { mx: 0.5 },
+  };
+
   switch (status) {
     case "PENDING":
       return (
-        <>
-          <button onClick={() => commands.cancel(task)}>Annuler</button>
-          <button onClick={() => commands.delete(task)}>Supprimer</button>
-        </>
+        <ButtonGroup size="small">
+          <Button
+            variant="outlined"
+            color="warning"
+            startIcon={<CancelIcon />}
+            onClick={() => commands.cancel(task)}
+            {...buttonProps}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={() => commands.delete(task)}
+            {...buttonProps}
+          >
+            Supprimer
+          </Button>
+        </ButtonGroup>
       );
     case "STARTED":
     case "RETRY":
     case "FAILURE":
-      return <button onClick={() => commands.cancel(task)}>Annuler</button>;
+      return (
+        <Button
+          variant="outlined"
+          color="warning"
+          startIcon={<CancelIcon />}
+          onClick={() => commands.cancel(task)}
+          {...buttonProps}
+        >
+          Annuler
+        </Button>
+      );
     case "SUCCESS":
       return (
-        <>
-          <button onClick={() => commands.download(task)}>Télécharger</button>
-          <button onClick={() => commands.delete(task)}>Supprimer</button>
-        </>
+        <ButtonGroup size="small">
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<DownloadIcon />}
+            onClick={() => commands.download(task)}
+            {...buttonProps}
+          >
+            Télécharger
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={() => commands.delete(task)}
+            {...buttonProps}
+          >
+            Supprimer
+          </Button>
+        </ButtonGroup>
       );
     case "REVOKED":
     case "IGNORED":
-      return <button onClick={() => commands.delete(task)}>Supprimer</button>;
+      return (
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={() => commands.delete(task)}
+          {...buttonProps}
+        >
+          Supprimer
+        </Button>
+      );
     default:
       throw new Error(`Unknown task status: ${status}`);
   }
 };
+
+const getStatusColor = (status: TaskStatus) => {
+  switch (status) {
+    case "SUCCESS":
+      return "success.main";
+    case "FAILURE":
+      return "error.main";
+    case "STARTED":
+    case "RETRY":
+      return "info.main";
+    case "PENDING":
+      return "warning.main";
+    case "REVOKED":
+    case "IGNORED":
+      return "text.disabled";
+    default:
+      return "text.primary";
+  }
+};
+
+export const VideoTaskList = ({ tasks, commands }: { tasks: VideoTask[]; commands: TaskCommands }) => (
+  <Box sx={{ width: "100%" }}>
+    <Typography variant="h6" color="textPrimary" sx={{ mb: 2 }}>
+      Tâches de conversion
+    </Typography>
+
+    {tasks.length === 0 ? (
+      <Typography color="text.secondary">Aucune tâche de conversion.</Typography>
+    ) : (
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="video tasks table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Video</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Message</TableCell>
+              <TableCell align="right">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tasks.map((task: VideoTask) => (
+              <TableRow key={task.taskId} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                <TableCell component="th" scope="row">
+                  {task.videoName}
+                </TableCell>
+                <TableCell>
+                  <Typography color={getStatusColor(task.taskStatus)}>{task.taskStatus}</Typography>
+                </TableCell>
+                <TableCell>
+                  {task.errorMessage ? <Typography color="error">{task.errorMessage}</Typography> : "–"}
+                </TableCell>
+                <TableCell align="right">
+                  <VideoTaskMenu task={task} commands={commands} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )}
+  </Box>
+);
 
 export default VideoTaskList;
