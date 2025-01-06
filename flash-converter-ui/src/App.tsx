@@ -6,6 +6,7 @@ import { videoProcessingService } from "./api/video-tasks/service.ts";
 import { useEffect } from "react";
 import UploadForm from "./components/video-tasks/UploadForm.tsx";
 import { TaskCommands } from "./types/video-tasks/taskCommands.ts";
+import { Paper, Typography } from "@mui/material";
 
 function App() {
   const { state, actions } = useVideoTasks();
@@ -76,13 +77,15 @@ function App() {
 
   return (
     <>
-      <h2>Téléchargez une vidéo</h2>
-      <div className="card">
+      <Typography variant="h6" color="textPrimary" gutterBottom>
+        Ajoutez des sous-titres à vos vidéos en un clin d’œil
+      </Typography>
+      <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
         <UploadForm appendTask={actions.appendTask} />
-      </div>
-      <div className="card">
+      </Paper>
+      <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
         <VideoTaskList tasks={tasks} commands={taskCommands} />
-      </div>
+      </Paper>
     </>
   );
 }
