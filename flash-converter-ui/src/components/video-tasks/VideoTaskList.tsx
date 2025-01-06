@@ -120,6 +120,27 @@ const getStatusColor = (status: TaskStatus) => {
   }
 };
 
+const getStatusMessage = (status: TaskStatus) => {
+  switch (status) {
+    case "SUCCESS":
+      return "Terminé";
+    case "FAILURE":
+      return "Erreur";
+    case "STARTED":
+      return "En cours";
+    case "RETRY":
+      return "Nouvel essai";
+    case "PENDING":
+      return "En attente";
+    case "REVOKED":
+      return "Annulé";
+    case "IGNORED":
+      return "Ignoré";
+    default:
+      return "Inconnu";
+  }
+};
+
 export const VideoTaskList = ({ tasks, commands }: { tasks: VideoTask[]; commands: TaskCommands }) => (
   <Box sx={{ width: "100%" }}>
     <Typography variant="h6" color="textPrimary" sx={{ mb: 2 }}>
@@ -146,7 +167,7 @@ export const VideoTaskList = ({ tasks, commands }: { tasks: VideoTask[]; command
                   {task.videoName}
                 </TableCell>
                 <TableCell>
-                  <Typography color={getStatusColor(task.taskStatus)}>{task.taskStatus}</Typography>
+                  <Typography color={getStatusColor(task.taskStatus)}>{getStatusMessage(task.taskStatus)}</Typography>
                 </TableCell>
                 <TableCell>
                   {task.errorMessage ? <Typography color="error">{task.errorMessage}</Typography> : "–"}
