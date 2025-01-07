@@ -3,6 +3,8 @@
 Flash Converter UI is a web application built with React and TypeScript that allows users to upload, process,
 and manage video tasks.
 
+This web application allows you to embed subtitles into video files.
+
 ## Features
 
 - Upload videos for processing
@@ -70,7 +72,7 @@ Follow the bellows steps to start the Flash Converter Workflow, API, and UI:
    and run the following command:
 
    ```shell
-   python -m uvicorn flash_converter.ws.api:app --reload 
+   python -m uvicorn flash_converter.ws.api:app --reload
    ```
 
    The application will be available at `http://127.0.0.1:8000`.
@@ -82,4 +84,3 @@ Follow the bellows steps to start the Flash Converter Workflow, API, and UI:
    ```
 
    The application will be available at `http://localhost:3000`.
-

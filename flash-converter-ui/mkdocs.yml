@@ -1,1 +1,8 @@
-site_name: My Docs
+site_name: Flash Converter UI
+
+nav:
+  - Home: index.md
+  - Development:
+      - dev/material-ui-integration.md
+      - dev/code-formatting.md
+      - dev/documentation.md

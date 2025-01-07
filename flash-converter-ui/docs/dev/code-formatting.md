@@ -71,5 +71,4 @@ npm run lint
 ```
 
 [prettier-installation]: https://prettier.io/docs/en/install.html
-
 [eslint-plugin]: https://github.com/prettier/eslint-config-prettier#installation
