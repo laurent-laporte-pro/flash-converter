@@ -127,7 +127,23 @@ services:
       - CELERY_BROKER_URL=amqp://lapin:cretin@rabbit:5672/
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - UPLOAD_DIR=/app/uploads
-      - CORS_ORIGINS=http://localhost:5173,http://ws:5173
+      - ALLOW_ORIGINS=http://localhost:5173, http://127.0.0.1:5173, http://ws:5173, http://localhost
+    restart: unless-stopped
+
+  ui:
+    image: flash-converter-ui:0.1.0
+    depends_on:
+      - ws
+    build:
+      dockerfile: ui.Dockerfile
+    expose:
+      - '80'
+    ports:
+      - '80:80'
+    networks:
+      - flash-converter-network
+    environment:
+      - API_BASE_URL=http://ws:8000
     restart: unless-stopped
 
 volumes:
