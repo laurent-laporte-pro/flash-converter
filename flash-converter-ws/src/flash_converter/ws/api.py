@@ -1,28 +1,43 @@
+import contextlib
+import logging
+
 import kombu.exceptions
 from fastapi import FastAPI
 from flash_converter_wf.server import celery_app
-from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import ALL_METHODS, CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from flash_converter.ws.config import settings
 from flash_converter.ws.router import router as task_router
 
-app = FastAPI()
 
-# Configuration du middleware CORS
+@contextlib.asynccontextmanager
+async def lifespan(_app: FastAPI):
+    settings.display_settings(logging.getLogger("uvicorn.error"))
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+# Configuration of the CORS middleware
+_ALLOW_HEADERS = (
+    "Accept",
+    "Accept-Language",
+    "Authorization",
+    "Content-Language",
+    "Content-Type",
+    "Origin",
+    "X-Requested-With",
+)
+
+# noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allow_origins.split(","),
+    allow_origins=settings.ALLOW_ORIGINS.split(","),
     allow_credentials=True,
-    allow_methods=("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"),
-    allow_headers=(
-        "Content-Type",
-        "Authorization",
-        "Accept",
-        "Origin",
-        "X-Requested-With",
-    ),
+    allow_methods=ALL_METHODS,
+    allow_headers=_ALLOW_HEADERS,
 )
 
 app.include_router(task_router, prefix="/tasks")
