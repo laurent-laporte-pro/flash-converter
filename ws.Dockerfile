@@ -1,15 +1,15 @@
 FROM python:3.12-slim-bullseye
 
-LABEL authors="Laurent LAPORTE <laurent.laporte.pro@gmail.com" \
+LABEL authors="Laurent LAPORTE <laurent.laporte.pro@gmail.com>" \
       description="Run FastAPI application in a container" \
-      version="0.0.1"
+      version="0.1.0"
 
 ARG APP_USER=batman
 ARG APP_GROUP=superheroes
 ARG APP_HOME=/app
 ARG APP_UPLOADS=/app/uploads
 
-COPY flash-converter-tasks/src ${APP_HOME}
+COPY flash-converter-wf/src ${APP_HOME}
 COPY flash-converter-ws/src ${APP_HOME}
 COPY ws.requirements.txt requirements.txt
 

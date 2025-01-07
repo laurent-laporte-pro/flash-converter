@@ -16,6 +16,12 @@
 pip install flash-converter-ws
 ```
 
+## Example
+
+```console
+uvicorn flash_converter.ws.api:app --reload
+```
+
 ## License
 
 `flash-converter-ws` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.

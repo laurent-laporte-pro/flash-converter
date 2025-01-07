@@ -1,0 +1,17 @@
+site_name: Flash Converter Documentation
+site_url: https://laurent-laporte-pro.github.io/
+theme:
+  name: mkdocs
+
+nav:
+  - Home: index.md
+
+markdown_extensions:
+  - toc
+  - admonition
+  - codehilite
+  - footnotes
+  - tables
+
+extra_css:
+  - css/custom.css

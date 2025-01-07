@@ -5,9 +5,9 @@ build-backend = "hatchling.build"
 [project]
 name = "flash-converter-ws"
 dynamic = ["version"]
-description = 'Web service to convert a video to mp3 quickly.'
+description = 'Web service to embed subtitles in videos automatically.'
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 license = "MIT"
 keywords = ["video", "audio", "converter", "webservice"]
 authors = [
@@ -16,17 +16,15 @@ authors = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
     # Project dependencies
-    "flash-converter-tasks",
+    "flash-converter-wf",
     # Third-party dependencies
     "celery~=5.4.0",
     "fastapi~=0.115.5",
@@ -39,9 +37,9 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/laurent-laporte-pro/flash-converter-ws#readme"
-Issues = "https://github.com/laurent-laporte-pro/flash-converter-ws/issues"
-Source = "https://github.com/laurent-laporte-pro/flash-converter-ws"
+Documentation = "https://github.com/laurent-laporte-pro/flash-converter#readme"
+Issues = "https://github.com/laurent-laporte-pro/flash-converter/issues"
+Source = "https://github.com/laurent-laporte-pro/flash-converter"
 
 [tool.hatch.version]
 path = "src/flash_converter/ws/__about__.py"
@@ -62,7 +60,7 @@ extra-dependencies = [
     "mypy>=1.0.0",
 ]
 [tool.hatch.envs.types.scripts]
-check = "mypy --namespace-packages --package flash_converter.tasks --install-types --non-interactive {args:src/flash_converter/ws tests}"
+check = "mypy --namespace-packages --package flash_converter.ws --install-types --non-interactive"
 
 # ----------------------------
 # Configuration of ruff
@@ -98,4 +96,4 @@ exclude_lines = [
 ]
 
 [tool.uv.sources]
-flash-converter-tasks = { path = "../flash-converter-tasks", editable = true }
+flash-converter-wf = { path = "../flash-converter-wf", editable = true }
