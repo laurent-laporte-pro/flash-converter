@@ -1,4 +1,4 @@
-<img alt="Flash Converter Logo" src="img/flash-converter-icon.png" style="float: right; width: 15em; height: 15em;"/>
+<img alt="Movie icon with a lightening" src="img/flash-converter-icon.png" title="Flash Converter" style="float: right; width: 15em; height: 15em;"/>
 
 # Flash Converter Documentation
 
